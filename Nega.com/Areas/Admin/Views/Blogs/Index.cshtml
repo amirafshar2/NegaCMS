@@ -27,16 +27,16 @@
     {
         <div class="table-wrap">
             <table class="table">
-                <thead><tr><th>Artikel</th><th>Kategorie</th><th>Autor</th><th>Datum</th><th>Aufrufe</th><th>Status</th><th></th></tr></thead>
+                <thead><tr><th>Artikel</th><th>Kategorie</th><th class="hide-md">Autor</th><th>Datum</th><th class="hide-md">Aufrufe</th><th>Status</th><th></th></tr></thead>
                 <tbody>
                     @foreach (var x in b.Items)
                     {
                         <tr>
                             <td><div class="cell-main"><img class="thumb" src="@x.Picture" alt="" /><div><b>@x.Title</b><small>@x.ReadingMinutes Min. Lesezeit</small></div></div></td>
                             <td><span class="badge b-blue">@x.Category?.Name</span></td>
-                            <td>@x.User?.FullName</td>
-                            <td class="muted">@x.Date.ToString("dd.MM.yyyy")</td>
-                            <td>@Fmt.Num(x.ViewCount)</td>
+                            <td class="hide-md">@x.User?.FullName</td>
+                            <td class="muted nowrap">@x.Date.ToString("dd.MM.yyyy")</td>
+                            <td class="hide-md">@Fmt.Num(x.ViewCount)</td>
                             <td>@await Html.PartialAsync("_Status", (x.Status, $"/admin/blogs/toggle/{x.Id}", "Veröffentlicht", "Entwurf"))</td>
                             <td><div class="actions">
                                 <a class="btn btn-ghost btn-icon" href="/blog/@x.Id" target="_blank" title="Ansehen"><i class="far fa-eye"></i></a>

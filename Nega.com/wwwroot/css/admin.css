@@ -325,3 +325,5 @@ tr.unread b { color: #fff; }
   .table td.stack .clip { max-width: 100%; }
   .table td.icon-cell { display: none; }
 }
+
+@media (min-width: 721px) and (max-width: 1280px) { .hide-md { display: none; } }
