@@ -32,7 +32,7 @@ namespace Negacom.Areas.Admin.Controllers
         public IActionResult Toggle(int id)
         {
             var c = _categories.GetById(id);
-            if (c != null) { c.Status = !c.Status; _categories.Update(c); }
+            if (c != null) { c.Status = !c.Status; _categories.Update(c); Ok(c.Status ? "Die Kategorie ist jetzt aktiv." : "Die Kategorie ist jetzt inaktiv."); }
             return RedirectToAction(nameof(Index));
         }
 

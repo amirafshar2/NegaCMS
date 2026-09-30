@@ -111,8 +111,10 @@ namespace Negacom.Areas.Admin.Controllers
             var prop = typeof(T).GetProperty("Status");
             if (item != null && prop != null)
             {
-                prop.SetValue(item, !(bool)prop.GetValue(item)!);
+                var on = !(bool)prop.GetValue(item)!;
+                prop.SetValue(item, on);
                 Service.Update(item);
+                Ok(on ? $"{ItemName} ist jetzt sichtbar." : $"{ItemName} ist jetzt ausgeblendet.");
             }
             return RedirectToAction(nameof(Index));
         }

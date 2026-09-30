@@ -105,7 +105,7 @@ namespace Negacom.Areas.Admin.Controllers
         public IActionResult Toggle(int id)
         {
             var n = _news.GetById(id);
-            if (n != null) { n.Status = !n.Status; _news.Update(n); }
+            if (n != null) { n.Status = !n.Status; _news.Update(n); Ok(n.Status ? "Die Adresse ist wieder aktiv." : "Die Adresse wurde abgemeldet."); }
             return RedirectToAction(nameof(Index));
         }
 
@@ -149,7 +149,7 @@ namespace Negacom.Areas.Admin.Controllers
         public IActionResult Delete(int id)
         {
             var n = _notifications.GetById(id);
-            if (n != null) _notifications.Delete(n);
+            if (n != null) { _notifications.Delete(n); Ok("Die Benachrichtigung wurde gelöscht."); }
             return RedirectToAction(nameof(Index));
         }
     }
