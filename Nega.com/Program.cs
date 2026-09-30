@@ -84,6 +84,8 @@ app.UseAuthentication();
 app.UseMiddleware<DemoAutoLoginMiddleware>();
 app.UseAuthorization();
 
+// old bilingual URLs (/de/..., /fa/...) -> same page without language prefix
+app.MapGet("/{lang:regex(^(de|fa)$)}/{**rest}", (string rest) => Results.Redirect("/" + rest));
 app.MapControllerRoute("admin", "admin/{controller=Dashboard}/{action=Index}/{id:int?}", new { area = "Admin" }, new { area = "Admin" });
 app.MapControllerRoute("blogDetail", "blog/{id:int}/{slug?}", new { controller = "Blog", action = "Detail" });
 app.MapControllerRoute("privacy", "datenschutz", new { controller = "Home", action = "Privacy" });
