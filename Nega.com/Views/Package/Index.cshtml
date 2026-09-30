@@ -1,0 +1,15 @@
+@model List<Package>
+@{ ViewData["Title"] = "Preise"; }
+<div class="page-head"><div class="container"><span class="eyebrow">Preise</span><h1>Unsere Pakete</h1><nav class="breadcrumb"><a href="/">Start</a><span>/</span><span>Preise</span></nav></div></div>
+<section><div class="container"><div class="grid grid-3">
+@foreach (var p in Model)
+{
+    <article class="card price @(p.IsPopular ? "popular" : null)">
+        @if (p.IsPopular) { <span class="badge">Beliebt</span> }
+        <h3>@p.Name</h3><span class="sub">@p.Title</span>
+        <div class="amount">@Fmt.Price(p.Price, p.PriceUnit)</div>
+        <ul>@foreach (var f in p.FeatureList) { <li><i class="fas fa-check"></i> @f</li> }</ul>
+        <a class="btn @(p.IsPopular ? "btn-primary" : "btn-ghost") btn-block" href="/package/detail/@p.Id">Details ansehen</a>
+    </article>
+}
+</div></div></section>

@@ -1,0 +1,25 @@
+@model List<NewsLetter>
+@{ ViewData["Title"] = "Newsletter"; }
+<div class="page-title"><div><h1>Newsletter</h1><p>@Model.Count(n => n.Status) aktive von @Model.Count Abonnenten.</p></div>
+    <a class="btn btn-ghost" href="/admin/newsletter/export"><i class="fas fa-file-csv"></i> Als CSV exportieren</a></div>
+<div class="row cols-main">
+    <div class="card"><div class="table-wrap"><table class="table">
+        <thead><tr><th>E-Mail</th><th>Angemeldet</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var n in Model)
+            {
+                <tr><td><b>@n.Mail</b></td><td class="muted">@n.Date.ToString("dd.MM.yyyy")</td>
+                    <td>@await Html.PartialAsync("_Status", (n.Status, $"/admin/newsletter/toggle/{n.Id}", "Aktiv", "Abgemeldet"))</td>
+                    <td><div class="actions">@await Html.PartialAsync("_Delete", ($"/admin/newsletter/delete/{n.Id}", "Adresse entfernen?"))</div></td></tr>
+            }
+        </tbody>
+    </table></div></div>
+    <div class="card">
+        <div class="card-head"><h3><i class="fas fa-plus"></i> Adresse hinzufügen</h3></div>
+        <form asp-antiforgery="true" class="card-body" method="post" action="/admin/newsletter/add">
+            <div class="field"><label for="nm">E-Mail</label><input id="nm" name="mail" type="email" required /></div>
+            <button class="btn btn-primary" type="submit">Hinzufügen</button>
+            <p class="hint muted small" style="margin-top:12px">Doppelte Adressen werden von der BLL abgelehnt.</p>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+@model List<RoleRow>
+@{ ViewData["Title"] = "Rollen"; var edit = ViewBag.Edit as UserRole; }
+<div class="page-title"><div><h1>Rollen & Rechte</h1><p>Rollenbasierte Autorisierung mit ASP.NET Core Identity.</p></div></div>
+<div class="row cols-main">
+    <div>
+        <div class="card" style="margin-bottom:20px"><div class="table-wrap"><table class="table">
+            <thead><tr><th>Rolle</th><th>Beschreibung</th><th>Benutzer</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr><td><b>@r.Role.Name</b> @if (RoleNames.All.Contains(r.Role.Name)) { <span class="badge b-gray">System</span> }</td>
+                        <td class="muted">@r.Role.Description</td>
+                        <td><a href="/admin/users?role=@r.Role.Name">@r.Users</a></td>
+                        <td><div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/roles?edit=@r.Role.Id"><i class="far fa-edit"></i></a>
+                            @if (!RoleNames.All.Contains(r.Role.Name)) { @await Html.PartialAsync("_Delete", ($"/admin/roles/delete/{r.Role.Id}", "Rolle löschen?")) }</div></td></tr>
+                }
+            </tbody>
+        </table></div></div>
+        <div class="card">
+            <div class="card-head"><h3><i class="fas fa-key"></i> Berechtigungen im Panel</h3></div>
+            <div class="table-wrap"><table class="table">
+                <thead><tr><th>Bereich</th><th>Admin</th><th>Moderator</th><th>Writer</th></tr></thead>
+                <tbody>
+                    @{
+                        var matrix = new (string Area, bool A, bool M, bool W)[] {
+                            ("Dashboard & Profil", true, true, true), ("Blogartikel (eigene)", true, true, true), ("Alle Blogartikel", true, true, false),
+                            ("Kategorien & Kommentare", true, true, false), ("Nachrichten & Newsletter", true, true, false), ("Kundenstimmen", true, true, false),
+                            ("Website-Inhalte (Leistungen, Preise, …)", true, false, false), ("Benutzer, Rollen, Einstellungen", true, false, false) };
+                    }
+                    @foreach (var m in matrix)
+                    {
+                        <tr><td>@m.Area</td>
+                            @foreach (var ok in new[] { m.A, m.M, m.W }) { <td>@if (ok) { <i class="fas fa-check" style="color:var(--ok)"></i> } else { <i class="fas fa-times muted"></i> }</td> }</tr>
+                    }
+                </tbody>
+            </table></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-head"><h3><i class="fas @(edit == null ? "fa-plus" : "fa-edit")"></i> @(edit == null ? "Neue Rolle" : "Rolle bearbeiten")</h3></div>
+        <form asp-antiforgery="true" class="card-body" method="post" action="/admin/roles/save">
+            <input type="hidden" name="id" value="@(edit?.Id ?? 0)" />
+            <div class="field"><label for="rn">Name</label><input id="rn" name="name" value="@edit?.Name" required readonly="@(edit != null && RoleNames.All.Contains(edit.Name))" /></div>
+            <div class="field"><label for="rd">Beschreibung</label><textarea id="rd" name="description" rows="3">@edit?.Description</textarea></div>
+            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button>
+                @if (edit != null) { <a class="btn btn-ghost" href="/admin/roles">Abbrechen</a> }</div>
+        </form>
+    </div>
+</div>

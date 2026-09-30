@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BE
 {
     public class Comment
     {
-        public int id { get; set; }
-                
-        public string Emil { get; set; }
+        public int Id { get; set; }
+        public string AuthorName { get; set; }
+        public string Email { get; set; }
         public string Content { get; set; }
-        public DateTime Date { get; set; }        
+        public DateTime Date { get; set; } = DateTime.Now;
+        /// <summary>true = approved and visible on the website.</summary>
         public bool Status { get; set; }
+
         public int BlogId { get; set; }
         public Blog Blog { get; set; }
-        public int userid { get; set; }
-        public User? user { get; set; }
-        public List<Reply> replies { get; set; }
+        public int? UserId { get; set; }
+        public User User { get; set; }
+        public List<Reply> Replies { get; set; } = new();
     }
 }

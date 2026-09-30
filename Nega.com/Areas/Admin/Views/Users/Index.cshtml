@@ -1,0 +1,29 @@
+@model List<UserRow>
+@{ ViewData["Title"] = "Benutzer"; var role = ViewBag.Role as string; }
+<div class="page-title"><div><h1>Benutzer</h1><p>Benutzerkonten und Rollen verwalten. Demo-Konten sind geschützt.</p></div>
+    <a class="btn btn-primary" href="/admin/users/create"><i class="fas fa-user-plus"></i> Neuer Benutzer</a></div>
+<div class="card">
+    <div class="toolbar"><nav class="tabs">
+        <a class="@(string.IsNullOrEmpty(role) ? "active" : null)" href="/admin/users">Alle</a>
+        @foreach (var r in (List<string>)ViewBag.AllRoles) { <a class="@(role == r ? "active" : null)" href="/admin/users?role=@r">@r</a> }
+    </nav></div>
+    <div class="table-wrap"><table class="table">
+        <thead><tr><th>Benutzer</th><th>Benutzername</th><th>Rollen</th><th>Artikel</th><th>Registriert</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                var u = r.User;
+                <tr>
+                    <td><div class="cell-main"><img class="avatar-sm" src="@u.Picture" alt="" /><div><b>@u.FullName @if (u.IsDemo) { <span class="badge b-amber" title="Geschützt">Demo</span> }</b><small>@u.Email</small></div></div></td>
+                    <td><code>@u.UserName</code></td>
+                    <td>@foreach (var x in r.Roles) { <span class="badge @(x == RoleNames.Admin ? "b-red" : x == RoleNames.Moderator ? "b-blue" : "b-gray")" style="margin-inline-end:4px">@x</span> }</td>
+                    <td>@r.Blogs</td>
+                    <td class="muted">@u.RegisterDate.ToString("dd.MM.yyyy")</td>
+                    <td>@await Html.PartialAsync("_Status", (u.Status, $"/admin/users/toggle/{u.Id}", "Aktiv", "Gesperrt"))</td>
+                    <td><div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/users/edit/@u.Id" title="Bearbeiten"><i class="far fa-edit"></i></a>
+                        @if (!u.IsDemo) { @await Html.PartialAsync("_Delete", ($"/admin/users/delete/{u.Id}", $"Benutzer „{u.UserName}“ löschen?")) }</div></td>
+                </tr>
+            }
+        </tbody>
+    </table></div>
+</div>

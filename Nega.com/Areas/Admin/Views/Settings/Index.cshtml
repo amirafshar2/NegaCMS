@@ -1,0 +1,37 @@
+@model OurContact
+@{ ViewData["Title"] = "Einstellungen"; }
+<div class="page-title"><div><h1>Website-Einstellungen</h1><p>Firmendaten, Startseiten-Texte und Social-Media-Links.</p></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" action="/admin/settings">
+    <div class="row cols-2">
+        <div class="card">
+            <div class="card-head"><h3><i class="far fa-building"></i> Firma & Startseite</h3></div>
+            <div class="card-body">
+                <div class="field"><label asp-for="CompanyName">Firmenname</label><input asp-for="CompanyName" required /></div>
+                <div class="field"><label asp-for="Slogan">Slogan</label><input asp-for="Slogan" /></div>
+                <div class="field"><label asp-for="HeroTitle">Hero-Überschrift</label><input asp-for="HeroTitle" /></div>
+                <div class="field"><label asp-for="HeroText">Hero-Text</label><textarea asp-for="HeroText" rows="4"></textarea></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-head"><h3><i class="far fa-address-card"></i> Kontakt & Social Media</h3></div>
+            <div class="card-body">
+                <div class="field-row">
+                    <div class="field"><label asp-for="PhoneNumber">Telefon</label><input asp-for="PhoneNumber" /></div>
+                    <div class="field"><label asp-for="Email">E-Mail</label><input asp-for="Email" type="email" required /></div>
+                </div>
+                <div class="field"><label asp-for="Address">Adresse</label><input asp-for="Address" /></div>
+                <div class="field"><label asp-for="OpeningHours">Erreichbarkeit</label><input asp-for="OpeningHours" /></div>
+                <div class="field-row">
+                    <div class="field"><label asp-for="LinkedIn">LinkedIn</label><input asp-for="LinkedIn" type="url" /></div>
+                    <div class="field"><label asp-for="Github">GitHub</label><input asp-for="Github" type="url" /></div>
+                </div>
+                <div class="field-row">
+                    <div class="field"><label asp-for="Instagram">Instagram</label><input asp-for="Instagram" type="url" /></div>
+                    <div class="field"><label asp-for="Telegram">Telegram</label><input asp-for="Telegram" type="url" /></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-actions" style="margin-top:20px"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Einstellungen speichern</button></div>
+</form>

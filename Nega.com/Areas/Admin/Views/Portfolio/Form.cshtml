@@ -1,0 +1,24 @@
+@model Portfolio
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neues Projekt" : "Projekt bearbeiten"; }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/portfolio">Referenzen</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/portfolio/create" : $"/admin/portfolio/edit/{Model.Id}")">
+    <div class="form-grid">
+        <div class="card"><div class="card-body">
+            <div class="field-row">
+                <div class="field"><label asp-for="Brand">Kunde / Marke</label><input asp-for="Brand" required /></div>
+                <div class="field"><label asp-for="PortfolioCategoryId">Kategorie</label>
+                    <select asp-for="PortfolioCategoryId" asp-items="(List<SelectListItem>)ViewBag.Categories" required><option value="">– bitte wählen –</option></select></div>
+            </div>
+            <div class="field"><label asp-for="Title">Titel</label><input asp-for="Title" required /></div>
+            <div class="field"><label asp-for="Description">Beschreibung</label><textarea asp-for="Description" rows="4"></textarea></div>
+            <div class="field-row">
+                <div class="field"><label asp-for="Link">Link</label><input asp-for="Link" placeholder="https://…" /></div>
+                <div class="field"><label asp-for="Date">Datum</label><input asp-for="Date" type="date" asp-format="{0:yyyy-MM-dd}" /></div>
+            </div>
+            <label class="switch"><input type="checkbox" asp-for="Status" /> Auf der Website anzeigen</label>
+            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/portfolio">Abbrechen</a></div>
+        </div></div>
+        <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Picture, "Projektbild", false))</div></div>
+    </div>
+</form>

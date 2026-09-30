@@ -1,0 +1,146 @@
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
+@inject UserManager<User> Users
+@inject BLL.Abstract.INotificationService Notifications
+@inject BLL.Abstract.ICommentService Comments
+@inject BLL.Abstract.IContactService Contacts
+@inject IOptions<DemoOptions> Demo
+@{
+    var me = await Users.GetUserAsync(User);
+    var section = ViewData["Section"] as string;
+    var isAdmin = User.IsInRole(RoleNames.Admin);
+    var isMod = isAdmin || User.IsInRole(RoleNames.Moderator);
+    var unread = Notifications.UnreadCount();
+    var latest = Notifications.GetLatest(6);
+    var pending = isMod ? Comments.PendingCount() : 0;
+    var unreadContacts = isMod ? Contacts.UnreadCount() : 0;
+    var role = User.IsInRole(RoleNames.Admin) ? RoleNames.Admin : User.IsInRole(RoleNames.Moderator) ? RoleNames.Moderator : RoleNames.Writer;
+    string A(params string[] s) => s.Contains(section) ? "active" : null;
+    var minutesLeft = Math.Max(0, (int)Math.Ceiling((Demo.Value.NextReset - DateTime.Now).TotalMinutes));
+    string Icon(string type) => type switch { "comment" => "far fa-comment t-blue", "contact" => "far fa-envelope t-red", "newsletter" => "far fa-paper-plane t-green", _ => "far fa-user t-amber" };
+}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>@(ViewData["Title"] ?? "Dashboard") – NEGA Admin</title>
+    <link rel="icon" href="~/img/brand/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="~/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/admin"><img src="~/img/brand/logo-light.png" alt="NEGA" width="85" height="32" /><span>ADMIN</span></a>
+        <nav class="menu" aria-label="Admin-Navigation">
+            <a class="@A("dashboard")" href="/admin"><i class="fas fa-chart-pie"></i> Dashboard</a>
+
+            <h6>Blog</h6>
+            <a class="@A("blogs")" href="/admin/blogs"><i class="far fa-newspaper"></i> Artikel</a>
+            @if (isMod)
+            {
+                <a class="@A("categories")" href="/admin/categories"><i class="far fa-folder"></i> Kategorien</a>
+                <a class="@A("comments")" href="/admin/comments"><i class="far fa-comments"></i> Kommentare @if (pending > 0) { <span class="pill">@pending</span> }</a>
+            }
+
+            @if (isAdmin)
+            {
+                <h6>Website</h6>
+                <a class="@A("services")" href="/admin/services"><i class="fas fa-concierge-bell"></i> Leistungen</a>
+                <a class="@A("about")" href="/admin/about"><i class="far fa-building"></i> Über uns</a>
+                <a class="@A("counters")" href="/admin/counters"><i class="fas fa-sort-numeric-up"></i> Zähler</a>
+                <a class="@A("portfolio", "portfoliocategories")" href="/admin/portfolio"><i class="far fa-images"></i> Referenzen</a>
+                <a class="@A("packages")" href="/admin/packages"><i class="fas fa-tags"></i> Preispakete</a>
+                <a class="@A("videos")" href="/admin/videos"><i class="fab fa-youtube"></i> Videos</a>
+            }
+            @if (isMod)
+            {
+                <a class="@A("testimonials")" href="/admin/testimonials"><i class="far fa-star"></i> Kundenstimmen</a>
+
+                <h6>Kommunikation</h6>
+                <a class="@A("contacts")" href="/admin/contacts"><i class="far fa-envelope"></i> Nachrichten @if (unreadContacts > 0) { <span class="pill">@unreadContacts</span> }</a>
+                <a class="@A("newsletter")" href="/admin/newsletter"><i class="far fa-paper-plane"></i> Newsletter</a>
+            }
+            <a class="@A("notifications")" href="/admin/notifications"><i class="far fa-bell"></i> Benachrichtigungen @if (unread > 0) { <span class="pill">@unread</span> }</a>
+
+            <h6>System</h6>
+            @if (isAdmin)
+            {
+                <a class="@A("users")" href="/admin/users"><i class="fas fa-users"></i> Benutzer</a>
+                <a class="@A("roles")" href="/admin/roles"><i class="fas fa-user-shield"></i> Rollen</a>
+                <a class="@A("settings")" href="/admin/settings"><i class="fas fa-cog"></i> Einstellungen</a>
+            }
+            <a class="@A("profile")" href="/admin/profile"><i class="far fa-id-badge"></i> Mein Profil</a>
+            <a href="/" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Website ansehen</a>
+        </nav>
+        <div class="foot">ASP.NET Core 8 · EF Core · SQLite<br />BE · DAL · BLL · UI</div>
+    </aside>
+
+    <div class="main">
+        @if (Demo.Value.Enabled)
+        {
+            <div class="demo-strip">
+                <span><i class="fas fa-flask"></i> <b>Demo-Modus</b> – alles ausprobieren erlaubt. Die Daten werden in ca. <b>@minutesLeft Min.</b> automatisch zurückgesetzt.</span>
+                <form asp-antiforgery="true" method="post" action="/admin/account/switchrole">
+                    
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                    <label for="demoRole">Ansicht als:</label>
+                    <select id="demoRole" name="role" onchange="this.form.submit()">
+                        @foreach (var r in new[] { RoleNames.Admin, RoleNames.Moderator, RoleNames.Writer })
+                        {
+                            <option value="@r" selected="@(r == role)">@(r switch { "Admin" => "Administrator", "Moderator" => "Moderator", _ => "Autor (Writer)" })</option>
+                        }
+                    </select>
+                </form>
+            </div>
+        }
+        <header class="topbar">
+            <button class="icon-btn menu-toggle" type="button" aria-label="Menü" onclick="document.body.classList.toggle('nav-open')"><i class="fas fa-bars"></i></button>
+            <span class="title">@(ViewData["Title"] ?? "Dashboard")</span>
+            <span class="spacer"></span>
+            <a class="icon-btn" href="/" target="_blank" rel="noopener" title="Website ansehen" aria-label="Website ansehen"><i class="fas fa-globe"></i></a>
+            <div class="dropdown">
+                <button class="icon-btn" type="button" data-dropdown aria-label="Benachrichtigungen"><i class="far fa-bell"></i>@if (unread > 0) { <span class="dot">@unread</span> }</button>
+                <div class="dropdown-menu">
+                    <div class="head"><span>Benachrichtigungen</span>
+                        @if (unread > 0)
+                        {
+                            <form asp-antiforgery="true" method="post" action="/admin/notifications/readall"><button class="btn btn-sm btn-ghost" type="submit">Alle gelesen</button></form>
+                        }
+                    </div>
+                    @if (!latest.Any()) { <div class="empty small">Keine Benachrichtigungen</div> }
+                    @foreach (var n in latest)
+                    {
+                        <a class="item @(n.ReadStatus ? null : "unread")" href="/admin/notifications/open/@n.Id">
+                            <span class="avatar"><i class="@Icon(n.Type)" style="background:none"></i></span>
+                            <span><b style="display:block">@n.Title</b><span class="muted small">@n.Message</span><br /><small class="muted">@Fmt.Ago(n.Timestamp)</small></span>
+                        </a>
+                    }
+                    <a class="foot" href="/admin/notifications">Alle anzeigen</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="user-chip" type="button" data-dropdown>
+                    <img src="@me?.Picture" alt="" width="32" height="32" />
+                    <div><b>@me?.FullName</b><small>@role</small></div>
+                    <i class="fas fa-chevron-down small muted"></i>
+                </button>
+                <div class="dropdown-menu narrow">
+                    <a class="link" href="/admin/profile"><i class="far fa-id-badge"></i> Mein Profil</a>
+                    <a class="link" href="/" target="_blank"><i class="fas fa-globe"></i> Website</a>
+                    <form asp-antiforgery="true" method="post" action="/admin/account/logout"><button class="link" type="submit" style="width:100%;background:none;border:0;color:inherit;font:inherit;cursor:pointer;border-top:1px solid var(--line)"><i class="fas fa-sign-out-alt"></i> Abmelden</button></form>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            @if (TempData["ok"] is string ok) { <div class="alert alert-ok" role="status"><i class="fas fa-check-circle"></i><span>@ok</span></div> }
+            @if (TempData["err"] is string err) { <div class="alert alert-err" role="alert"><i class="fas fa-exclamation-circle"></i><span style="white-space:pre-line">@err</span></div> }
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

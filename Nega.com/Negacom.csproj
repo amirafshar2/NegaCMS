@@ -1,53 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
+  <!-- UI layer (ASP.NET Core MVC). Talks only to BLL services. -->
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Negacom</RootNamespace>
+    <AssemblyName>Negacom</AssemblyName>
   </PropertyGroup>
-
   <ItemGroup>
-    <Content Remove="wwwroot\jsadmin\Commetnjs\Script.js" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EfCoreVersion)" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.9.1" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="Microsoft.AspNet.WebHelpers" Version="3.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="5.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.17">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\BE\BE.csproj" />
-    <ProjectReference Include="..\BLL\BLL.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
+    <ProjectReference Include="..\BLL\BLL.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="Packimage\" />
-    <Folder Include="wwwroot\image\Pack\" />
+    <!-- The SQLite database file lives inside the project -->
+    <None Update="App_Data\nega.db" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="wwwroot\uploads\content\**" CopyToPublishDirectory="Never" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\jsadmin\Commetnjs\Script.js" />
-    <None Include="wwwroot\jsadmin\refjs\Script.js" />
-  </ItemGroup>
-
 </Project>

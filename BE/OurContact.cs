@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BE
 {
+    /// <summary>Company information and site settings (one row per language).</summary>
     public class OurContact
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string CompanyName { get; set; }
-        public string PhoneNunber { get; set; }
+        public string Slogan { get; set; }
+        public string HeroTitle { get; set; }
+        public string HeroText { get; set; }
+        public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public string Adres { get; set; }
-        public string Facebook { get; set; }
-        public string İnstagram { get; set; }
+        public string Address { get; set; }
+        public string OpeningHours { get; set; }
+        public string Instagram { get; set; }
         public string Telegram { get; set; }
-
-
+        public string LinkedIn { get; set; }
+        public string Github { get; set; }
     }
 }

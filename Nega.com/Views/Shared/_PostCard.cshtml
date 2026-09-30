@@ -1,0 +1,16 @@
+@model Blog
+<article class="card post reveal">
+    <a class="thumb" href="/blog/@Model.Id">
+        <img src="@Model.Picture" alt="" loading="lazy" width="1200" height="750" />
+        @if (Model.Category != null) { <span class="cat">@Model.Category.Name</span> }
+    </a>
+    <div class="body">
+        <div class="meta" style="margin-bottom:10px">
+            <span><i class="far fa-calendar"></i>@Fmt.Date(Model.Date)</span>
+            <span><i class="far fa-clock"></i>@Model.ReadingMinutes Min.</span>
+        </div>
+        <h3><a href="/blog/@Model.Id">@Model.Title</a></h3>
+        <p>@Model.Summary</p>
+        <a href="/blog/@Model.Id" style="color:var(--accent-2);font-weight:700;font-size:.92rem">Weiterlesen <i class="fas fa-arrow-right"></i></a>
+    </div>
+</article>

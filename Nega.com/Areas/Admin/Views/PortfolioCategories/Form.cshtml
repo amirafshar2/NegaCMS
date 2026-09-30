@@ -1,0 +1,12 @@
+@model PortfolioCategory
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neue Kategorie" : "Kategorie bearbeiten"; }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/portfoliocategories">Referenz-Kategorien</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" action="@(isNew ? "/admin/portfoliocategories/create" : $"/admin/portfoliocategories/edit/{Model.Id}")" class="card" style="max-width:640px">
+    <div class="card-body">
+        <div class="field"><label asp-for="Name">Name</label><input asp-for="Name" required /></div>
+        <div class="field"><label asp-for="Description">Beschreibung</label><textarea asp-for="Description" rows="3"></textarea></div>
+        <label class="switch"><input type="checkbox" asp-for="Status" /> Aktiv</label>
+        <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/portfoliocategories">Abbrechen</a></div>
+    </div>
+</form>

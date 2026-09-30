@@ -1,0 +1,50 @@
+@model UserFormModel
+@{
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "Neuer Benutzer" : "Benutzer bearbeiten";
+    var roles = (List<UserRole>)ViewBag.AllRoles;
+}
+<div class="page-title"><div><div class="crumbs"><a href="/admin/users">Benutzer</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+@if (Model.IsDemo) { <div class="alert alert-info"><i class="fas fa-lock"></i><span>Dies ist ein geschütztes Demo-Konto: Benutzername, Status, Rollen und Passwort können nicht geändert werden.</span></div> }
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/users/create" : $"/admin/users/edit/{Model.Id}")">
+    <div class="form-grid">
+        <div class="card"><div class="card-body">
+            <div class="field-row">
+                <div class="field"><label asp-for="Name">Vorname</label><input asp-for="Name" required /></div>
+                <div class="field"><label asp-for="Family">Nachname</label><input asp-for="Family" /></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label asp-for="UserName">Benutzername</label><input asp-for="UserName" required readonly="@Model.IsDemo" autocomplete="off" /></div>
+                <div class="field"><label asp-for="Email">E-Mail</label><input asp-for="Email" type="email" required /></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label asp-for="JobTitle">Position</label><input asp-for="JobTitle" /></div>
+                <div class="field"><label asp-for="PhoneNumber">Telefon</label><input asp-for="PhoneNumber" /></div>
+            </div>
+            <div class="field"><label asp-for="About">Über mich</label><textarea asp-for="About" rows="3"></textarea></div>
+            <div class="field-row">
+                <div class="field"><label asp-for="LinkedIn">LinkedIn</label><input asp-for="LinkedIn" type="url" /></div>
+                <div class="field"><label asp-for="Instagram">Instagram</label><input asp-for="Instagram" type="url" /></div>
+            </div>
+            @if (!Model.IsDemo)
+            {
+                <div class="field"><label asp-for="Password">@(isNew ? "Passwort" : "Neues Passwort (optional)")</label><input asp-for="Password" type="password" autocomplete="new-password" minlength="6" />
+                    <div class="hint">Mindestens 6 Zeichen, davon eine Ziffer und ein Kleinbuchstabe.</div></div>
+            }
+        </div></div>
+        <div class="sticky-side">
+            <div class="card"><div class="card-body">
+                <span class="label">Rollen</span>
+                @foreach (var r in roles)
+                {
+                    <label class="switch" style="font-weight:600"><input type="checkbox" name="Roles" value="@r.Name" checked="@Model.Roles.Contains(r.Name)" disabled="@Model.IsDemo" /> @r.Name <small class="muted">@r.Description</small></label>
+                }
+                <hr style="border:0;border-top:1px solid var(--line);margin:14px 0" />
+                <label class="switch"><input type="checkbox" asp-for="Status" disabled="@Model.IsDemo" /> Konto aktiv</label>
+                <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/users">Abbrechen</a></div>
+            </div></div>
+            <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Picture, "Profilbild", true))</div></div>
+        </div>
+    </div>
+</form>

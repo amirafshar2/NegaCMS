@@ -1,0 +1,20 @@
+@model List<Notification>
+@{
+    ViewData["Title"] = "Benachrichtigungen";
+    string Icon(string t) => t switch { "comment" => "far fa-comment t-blue", "contact" => "far fa-envelope t-red", "newsletter" => "far fa-paper-plane t-green", _ => "far fa-user t-amber" };
+}
+<div class="page-title"><div><h1>Benachrichtigungen</h1><p>Automatisch erzeugt bei neuen Kommentaren, Nachrichten und Newsletter-Anmeldungen.</p></div>
+    <form asp-antiforgery="true" method="post" action="/admin/notifications/readall"><button class="btn btn-ghost" type="submit"><i class="fas fa-check-double"></i> Alle als gelesen markieren</button></form></div>
+<div class="card">
+    @if (!Model.Any()) { <div class="empty"><i class="far fa-bell-slash"></i><p>Keine Benachrichtigungen.</p></div> }
+    <ul class="feed">
+        @foreach (var n in Model)
+        {
+            <li style="@(n.ReadStatus ? "" : "background:rgba(229,20,10,.05)")">
+                <span class="ic @Icon(n.Type).Split(' ')[2]"><i class="@string.Join(' ', Icon(n.Type).Split(' ').Take(2))"></i></span>
+                <div style="flex:1;min-width:0"><a href="/admin/notifications/open/@n.Id"><b>@n.Title</b></a> @if (!n.ReadStatus) { <span class="badge b-red">neu</span> }<p>@n.Message</p><small>@Fmt.DateTime(n.Timestamp)</small></div>
+                @await Html.PartialAsync("_Delete", ($"/admin/notifications/delete/{n.Id}", "Benachrichtigung löschen?"))
+            </li>
+        }
+    </ul>
+</div>

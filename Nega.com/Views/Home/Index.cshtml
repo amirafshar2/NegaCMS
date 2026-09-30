@@ -1,20 +1,275 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model HomeViewModel
+@{
+    var s = Model.Settings;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-@if (User.Identity.IsAuthenticated)
+<!-- ============ Hero ============ -->
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="reveal">
+            <span class="eyebrow">@s.Slogan</span>
+            <h1><span class="grad">@s.HeroTitle</span></h1>
+            <p class="lead">@s.HeroText</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="#contact"><i class="far fa-paper-plane"></i> Projekt anfragen</a>
+                <a class="btn btn-ghost" href="#work"><i class="far fa-images"></i> Referenzen ansehen</a>
+            </div>
+            <div class="hero-badges">
+                <span><i class="fas fa-check-circle"></i> Festpreis-Pakete</span>
+                <span><i class="fas fa-check-circle"></i> DSGVO-freundlich</span>
+                <span><i class="fas fa-check-circle"></i> Support aus Stuttgart</span>
+            </div>
+        </div>
+        <div class="hero-visual reveal">
+            <div class="frame"><img src="/uploads/seed/work-1.jpg" alt="Beispielprojekt: Website für ein Café" width="1200" height="750" /></div>
+            <div class="float-card two"><i class="fas fa-bolt"></i><div><b>98/100</b><small>PageSpeed</small></div></div>
+            <div class="float-card one"><i class="fas fa-layer-group"></i><div><b>@(Model.Counters.FirstOrDefault()?.TotalSuccess ?? 120)+</b><small>Projekte umgesetzt</small></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ Services ============ -->
+<section id="services" class="section-alt">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="eyebrow">Leistungen</span>
+            <h2>Alles, was Ihre Website braucht</h2>
+            <p class="muted">Von der ersten Skizze bis zum laufenden Betrieb – wir begleiten Ihr Projekt in jeder Phase.</p>
+        </div>
+        <div class="grid grid-3">
+            @foreach (var sv in Model.Services)
+            {
+                <article class="card service reveal">
+                    <div class="icon"><i class="@sv.Icon"></i></div>
+                    <h3>@sv.Title</h3>
+                    <p>@sv.Content</p>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============ About ============ -->
+@if (Model.About != null && Model.About.Status)
 {
-    <p>Welcome, @User.Identity.Name</p>
-    <form asp-action="Logout" asp-controller="Login" method="post" class="form-inline">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-link"><i class="fa fa-sign-out"></i>Logout</button>
-    </form>
+    <section id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-img reveal">
+                    <img src="@Model.About.Image" alt="@Model.About.Title" loading="lazy" width="1200" height="750" />
+                    <div class="since"><b>@Model.About.FoundedYear</b><small>gegründet</small></div>
+                </div>
+                <div class="about-text reveal">
+                    <span class="eyebrow">@Model.About.Title</span>
+                    <h2>@Model.About.Subtitle</h2>
+                    <p>@Model.About.Content</p>
+                    <p>@Model.About.Content2</p>
+                    <ul class="checks">
+                        <li><i class="fas fa-check"></i> Persönliche Ansprechpartner statt Callcenter</li>
+                        <li><i class="fas fa-check"></i> Moderne Technik: ASP.NET Core, sauberer Code, schnelle Ladezeiten</li>
+                        <li><i class="fas fa-check"></i> Transparente Festpreise ohne versteckte Kosten</li>
+                    </ul>
+                    <a class="btn btn-primary" href="#contact">Kennenlernen <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            @if (Model.Counters.Any())
+            {
+                <div class="grid grid-4 counters">
+                    @foreach (var c in Model.Counters)
+                    {
+                        <div class="card counter reveal">
+                            <i class="@c.Icon"></i>
+                            <b><span class="count" data-to="@c.TotalSuccess">@Fmt.Num(c.TotalSuccess)</span>@c.Suffix</b>
+                            <span>@c.Title</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
 }
-else
+
+<!-- ============ Portfolio ============ -->
+<section id="work" class="section-alt">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="eyebrow">Referenzen</span>
+            <h2>Ausgewählte Projekte</h2>
+            <p class="muted">Ein Auszug aus Projekten, die wir für unsere Kund:innen umgesetzt haben.</p>
+        </div>
+        @if (Model.PortfolioCategories.Count > 1)
+        {
+            <div class="filters" role="tablist" aria-label="Projekte filtern">
+                <button type="button" class="active" data-filter="all">Alle</button>
+                @foreach (var c in Model.PortfolioCategories)
+                {
+                    <button type="button" data-filter="cat-@c.Id">@c.Name</button>
+                }
+            </div>
+        }
+        <div class="grid grid-3" id="workGrid">
+            @foreach (var p in Model.Portfolios)
+            {
+                <article class="card work reveal" data-cat="cat-@p.PortfolioCategoryId">
+                    <div class="thumb"><img src="@p.Picture" alt="@p.Title" loading="lazy" width="1200" height="750" /></div>
+                    <div class="body">
+                        <span class="tag">@p.PortfolioCategory?.Name</span>
+                        <h3>@p.Brand</h3>
+                        <p>@p.Title – @p.Description</p>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============ Video (loads YouTube only after a click – DSGVO) ============ -->
+@if (Model.Video != null)
 {
-    <a href="/Admin/Login">Login</a>
+    var ytId = ContentHelper.YouTubeId(Model.Video.VideoLink);
+    <section id="video">
+        <div class="container video-grid">
+            <div class="reveal">
+                <span class="eyebrow">Video</span>
+                <h2>@Model.Video.Title</h2>
+                <p class="muted">@Model.Video.Content</p>
+                <ul class="checks">
+                    <li><i class="fas fa-comments"></i> 1. Kennenlernen & Beratung</li>
+                    <li><i class="fas fa-pencil-ruler"></i> 2. Konzept & Design</li>
+                    <li><i class="fas fa-code"></i> 3. Entwicklung & Tests</li>
+                    <li><i class="fas fa-rocket"></i> 4. Launch & Betreuung</li>
+                </ul>
+            </div>
+            <div class="video-box reveal" data-yt="@ytId">
+                <img src="@Model.Video.Picture" alt="Vorschaubild: @Model.Video.Title" loading="lazy" width="1200" height="750" />
+                <div class="video-consent">
+                    <button type="button" class="play" aria-label="Video abspielen"><i class="fas fa-play"></i></button>
+                    <small>Mit Klick auf „Abspielen“ wird das Video von YouTube geladen. Dabei werden Daten an Google übertragen. <a href="/datenschutz">Mehr erfahren</a></small>
+                </div>
+            </div>
+        </div>
+    </section>
 }
+
+<!-- ============ Pricing ============ -->
+<section id="pricing" class="section-alt">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="eyebrow">Preise</span>
+            <h2>Transparente Pakete</h2>
+            <p class="muted">Alle Preise sind Festpreise zzgl. MwSt. Individuelle Wünsche? Wir erstellen gern ein persönliches Angebot.</p>
+        </div>
+        <div class="grid grid-3">
+            @foreach (var p in Model.Packages)
+            {
+                <article class="card price @(p.IsPopular ? "popular" : null) reveal">
+                    @if (p.IsPopular) { <span class="badge">Beliebt</span> }
+                    <h3>@p.Name</h3>
+                    <span class="sub">@p.Title</span>
+                    <div class="amount">@Fmt.Price(p.Price, p.PriceUnit) <small>einmalig</small></div>
+                    <span class="muted" style="font-size:.9rem"><i class="far fa-clock"></i> ca. @p.DeliveryDays Tage Umsetzung</span>
+                    <ul>
+                        @foreach (var f in p.FeatureList) { <li><i class="fas fa-check"></i> @f</li> }
+                    </ul>
+                    <a class="btn @(p.IsPopular ? "btn-primary" : "btn-ghost") btn-block" href="/package/detail/@p.Id">Details ansehen</a>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============ Testimonials ============ -->
+@if (Model.Testimonials.Any())
+{
+    <section id="testimonials">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Kundenstimmen</span>
+                <h2>Das sagen unsere Kund:innen</h2>
+            </div>
+            <div class="grid grid-2">
+                @foreach (var t in Model.Testimonials)
+                {
+                    <figure class="card quote reveal" style="margin:0">
+                        <div class="stars" aria-label="@t.Rating von 5 Sternen">@for (int i = 0; i < 5; i++) { <i class="@(i < t.Rating ? "fas" : "far") fa-star"></i> }</div>
+                        <blockquote style="margin:0"><p>„@t.Content“</p></blockquote>
+                        <figcaption class="person">
+                            <img src="@t.Picture" alt="" width="48" height="48" loading="lazy" />
+                            <div><b>@t.NameSurname</b><small>@t.Brand</small></div>
+                        </figcaption>
+                    </figure>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- ============ Blog ============ -->
+@if (Model.LatestBlogs.Any())
+{
+    <section id="blog" class="section-alt">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Blog</span>
+                <h2>Wissen & Tipps aus der Praxis</h2>
+            </div>
+            <div class="grid grid-3">
+                @foreach (var b in Model.LatestBlogs) { <partial name="_PostCard" model="b" /> }
+            </div>
+            <div style="text-align:center;margin-top:40px"><a class="btn btn-ghost" href="/blog">Alle Artikel <i class="fas fa-arrow-right"></i></a></div>
+        </div>
+    </section>
+}
+
+<!-- ============ Newsletter ============ -->
+<section id="newsletter" style="padding-block:64px 0">
+    <div class="container">
+        <div class="cta reveal">
+            <div>
+                <h2>Keine Tipps mehr verpassen</h2>
+                <p>Einmal im Monat: neue Artikel, Praxistipps und Neuigkeiten aus der Agentur. Abmeldung jederzeit möglich.</p>
+            </div>
+            <form method="post" action="/home/newsletter" class="js-ajax" data-result="newsResult">
+                @Html.AntiForgeryToken()
+                <label class="visually-hidden" for="nlMail">E-Mail-Adresse</label>
+                <input class="input" id="nlMail" type="email" name="mail" placeholder="ihre@email.de" required />
+                <button class="btn btn-primary" type="submit">Anmelden</button>
+            </form>
+            <div id="newsResult" style="grid-column:1/-1"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ Contact ============ -->
+<section id="contact">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="eyebrow">Kontakt</span>
+            <h2>Lassen Sie uns über Ihr Projekt sprechen</h2>
+            <p class="muted">Schreiben Sie uns – wir antworten in der Regel innerhalb eines Werktages.</p>
+        </div>
+        <div class="contact-grid">
+            <div class="card contact-info reveal">
+                <div class="info-row"><i class="fas fa-phone-alt"></i><div><small>Telefon</small><span class="ltr">@s.PhoneNumber</span></div></div>
+                <div class="info-row"><i class="far fa-envelope"></i><div><small>E-Mail</small>@s.Email</div></div>
+                <div class="info-row"><i class="fas fa-map-marker-alt"></i><div><small>Adresse</small>@s.Address</div></div>
+                <div class="info-row"><i class="far fa-clock"></i><div><small>Erreichbarkeit</small>@s.OpeningHours</div></div>
+            </div>
+            <div class="card form-card reveal">
+                <form method="post" action="/home/contact" class="js-ajax" data-result="contactResult" novalidate>
+                    @Html.AntiForgeryToken()
+                    <div id="contactResult"></div>
+                    <div class="form-row">
+                        <div class="field"><label for="cName">Name</label><input id="cName" name="UserName" autocomplete="name" required maxlength="80" /></div>
+                        <div class="field"><label for="cMail">E-Mail</label><input id="cMail" name="Mail" type="email" autocomplete="email" required /></div>
+                    </div>
+                    <div class="field"><label for="cSubject">Betreff</label><input id="cSubject" name="Subject" required maxlength="150" /></div>
+                    <div class="field"><label for="cMsg">Nachricht</label><textarea id="cMsg" name="Message" required minlength="10" maxlength="3000"></textarea></div>
+                    <button class="btn btn-primary" type="submit"><i class="far fa-paper-plane"></i> Nachricht senden</button>
+                    <p class="form-note">Ihre Angaben verwenden wir nur zur Bearbeitung Ihrer Anfrage. Details in der <a href="/datenschutz" style="text-decoration:underline">Datenschutzerklärung</a>.</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

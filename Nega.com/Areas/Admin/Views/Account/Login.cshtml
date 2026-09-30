@@ -1,0 +1,32 @@
+@model LoginModel
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="robots" content="noindex" />
+    <title>Anmelden – NEGA Admin</title>
+    <link rel="icon" href="~/img/brand/favicon.png" />
+    <link rel="stylesheet" href="~/vendor/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body>
+<div class="auth">
+    <div class="card">
+        <div class="brand"><img src="~/img/brand/logo-light.png" alt="NEGA" /></div>
+        <h1 style="font-size:1.3rem;text-align:center">Anmeldung Admin-Bereich</h1>
+        <partial name="_Errors" />
+        <form asp-antiforgery="true" method="post" action="/admin/account/login">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="field"><label asp-for="UserName">Benutzername</label><input asp-for="UserName" autocomplete="username" required /></div>
+            <div class="field"><label asp-for="Password">Passwort</label><input asp-for="Password" type="password" autocomplete="current-password" required /></div>
+            <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Anmelden</button>
+        </form>
+        @if ((bool)ViewBag.Demo)
+        {
+            <div class="alert alert-info" style="margin-top:20px"><i class="fas fa-flask"></i><span>Demo-Modus: Der Admin-Bereich öffnet sich auch ohne Anmeldung. <a href="/admin" style="text-decoration:underline">Direkt zur Demo</a></span></div>
+        }
+        <p class="muted small" style="text-align:center;margin:16px 0 0"><a href="/">← Zurück zur Website</a></p>
+    </div>
+</div>
+</body>
+</html>

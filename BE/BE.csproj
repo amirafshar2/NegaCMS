@@ -1,11 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-
+  <!-- BE (Business Entities): plain entity classes, no dependency on other layers -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.17" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
 </Project>

@@ -1,0 +1,8 @@
+@model (bool On, string Url, string OnText, string OffText)
+<form asp-antiforgery="true" method="post" action="@Model.Url" class="toggle-form">
+    
+    <button type="submit" title="Status umschalten">
+        @if (Model.On) { <span class="badge b-green"><i class="fas fa-circle" style="font-size:.5em"></i> @Model.OnText</span> }
+        else { <span class="badge b-gray"><i class="far fa-circle" style="font-size:.5em"></i> @Model.OffText</span> }
+    </button>
+</form>

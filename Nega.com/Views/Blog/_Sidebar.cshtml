@@ -1,0 +1,39 @@
+@model (List<(Category Category, int BlogCount)> Categories, List<Blog> Posts, string PostsTitle, int? ActiveCategory, string Search)
+<aside class="sidebar">
+    <div class="card widget">
+        <h4><i class="fas fa-search"></i> Suche</h4>
+        <form class="search-box" method="get" action="/blog" role="search">
+            <label class="visually-hidden" for="q">Artikel durchsuchen</label>
+            <input class="input" id="q" name="q" value="@Model.Search" placeholder="Artikel durchsuchen…" />
+            <button type="submit" aria-label="Suchen"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+    <div class="card widget">
+        <h4><i class="far fa-folder-open"></i> Kategorien</h4>
+        <ul class="cat-list">
+            <li><a class="@(Model.ActiveCategory == null && string.IsNullOrEmpty(Model.Search) ? "active" : null)" href="/blog"><span>Alle Artikel</span><span class="count">@Model.Categories.Sum(c => c.BlogCount)</span></a></li>
+            @foreach (var (c, n) in Model.Categories)
+            {
+                <li><a class="@(Model.ActiveCategory == c.Id ? "active" : null)" href="/blog?category=@c.Id"><span>@c.Name</span><span class="count">@n</span></a></li>
+            }
+        </ul>
+    </div>
+    @if (Model.Posts?.Any() == true)
+    {
+        <div class="card widget">
+            <h4><i class="fas fa-fire"></i> @Model.PostsTitle</h4>
+            @foreach (var p in Model.Posts)
+            {
+                <a class="mini-post" href="/blog/@p.Id">
+                    <img src="@p.Picture" alt="" loading="lazy" width="64" height="48" />
+                    <span><b>@p.Title</b><small>@Fmt.Date(p.Date)</small></span>
+                </a>
+            }
+        </div>
+    }
+    <div class="card widget" style="background:linear-gradient(160deg,rgba(229,20,10,.18),var(--surface) 60%)">
+        <h4><i class="far fa-lightbulb"></i> Projekt geplant?</h4>
+        <p class="muted" style="font-size:.93rem">Wir beraten Sie unverbindlich zu Website, Shop oder Web-App.</p>
+        <a class="btn btn-primary btn-sm" href="/#contact">Kontakt aufnehmen</a>
+    </div>
+</aside>

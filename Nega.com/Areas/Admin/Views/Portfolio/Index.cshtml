@@ -1,92 +1,19 @@
-﻿@{
-    ViewData["Title"] = "Index";
-    Layout = "~/areas/admin/views/shared/adminlayout.cshtml";
-}
-
-
-
-<head>
-    <link href="~/AdminTema/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/AdminTema/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="~/AdminTema/css/animate.css" rel="stylesheet">
-    <link href="~/AdminTema/css/plugins/dropzone/basic.css" rel="stylesheet">
-    <link href="~/AdminTema/css/plugins/dropzone/dropzone.css" rel="stylesheet">
-    <link href="~/AdminTema/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-    <link href="~/AdminTema/css/plugins/codemirror/codemirror.css" rel="stylesheet">
-    <link href="~/AdminTema/css/style.css" rel="stylesheet">
-</head>
-
-<div class="row">
-    <div class="col-lg-12">
-        <h2> <i class="fa fa-archive"></i> <span class="nav-label">  Portfolio Category </span></h2>
-    </div>
-</div>
-<div class="row">
-    <button class="btn btn btn-info  m-3" id="btnid">
-        Add New Service
-    </button>
-</div>
-<div >
-    <div class="container" >
-        <div class="row">
-            <div class="col-lg-offset-2 col-lg-12" style="display:none;" id="boxcon">
-                <div class="ibox">
-                    <div class="ibox-title">
-                        <h5>Porefolio Category Add</h5>
-                        <div class="ibox-tools">
-                        
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <form method="post" enctype="multipart/form-data" autocomplete="off">
-                            <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">Name<text class="text text-danger">*</text></label>
-                                <div class="col-sm-10"><input type="text" class="form-control" id="PName" name="Name"></div>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 col-form-label">Description<text class="text text-danger">*</text></label>
-                                <div class="col-sm-10"><input type="text" class="form-control" id="PName" name="Description"></div>
-                            </div>
-
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group row">
-                                <label class=" col-form-label text-danger">@Html.ValidationSummary()</label>
-                            </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group row">
-                                <div style="margin:0px 0px 0px 30px " class="col-lg-offset-2 col-lg-4 ">
-                                    <div class="form-group row">
-
-                                        <button class="btn btn-primary  dim"  id="PBtn" type="submit">
-                                            <i class="fa fa-floppy-o"></i>
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+@model List<Portfolio>
+@{ ViewData["Title"] = "Referenzen"; }
+<div class="page-title"><div><h1>Referenzen</h1><p>Projekte im Bereich „Referenzen“ der Startseite – filterbar nach Kategorie.</p></div>
+    <div class="actions"><a class="btn btn-ghost" href="/admin/portfoliocategories"><i class="far fa-folder"></i> Kategorien</a>
+        <a class="btn btn-primary" href="/admin/portfolio/create"><i class="fas fa-plus"></i> Neues Projekt</a></div></div>
+<div class="cards-grid">
+    @foreach (var p in Model)
+    {
+        <div class="card item-card">
+            <img class="cover" src="@p.Picture" alt="" />
+            <div class="body"><span class="badge b-blue">@p.PortfolioCategory?.Name</span><b style="margin-top:8px">@p.Brand</b><p class="muted small" style="margin:4px 0 0">@p.Title</p></div>
+            <div class="foot">
+                @await Html.PartialAsync("_Status", (p.Status, $"/admin/portfolio/toggle/{p.Id}", "Sichtbar", "Ausgeblendet"))
+                <div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/portfolio/edit/@p.Id"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/portfolio/delete/{p.Id}", $"Projekt „{p.Brand}“ löschen?"))</div>
             </div>
-
-
-            @await Component.InvokeAsync("GetPortfolioAll")
-
         </div>
-    </div>
+    }
 </div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="~/AdminTema/js/jquery-3.1.1.min.js"></script>
-<script src="~/AdminTema/js/popper.min.js"></script>
-<script src="~/AdminTema/js/bootstrap.js"></script>
-<script src="~/AdminTema/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="~/AdminTema/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="~/AdminTema/js/inspinia.js"></script>
-<script src="~/AdminTema/js/plugins/pace/pace.min.js"></script>
-
-<script src="~/jsadmin/service/javascript.js"></script>

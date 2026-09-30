@@ -1,0 +1,16 @@
+@model Services
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neue Leistung" : "Leistung bearbeiten"; }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/services">Leistungen</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" action="@(isNew ? "/admin/services/create" : $"/admin/services/edit/{Model.Id}")" class="card" style="max-width:760px">
+    <div class="card-body">
+        <div class="field"><label asp-for="Title">Titel</label><input asp-for="Title" required /></div>
+        <div class="field"><label asp-for="Content">Beschreibung</label><textarea asp-for="Content" rows="4" required></textarea></div>
+        <div class="field-row">
+            <div class="field"><label asp-for="Icon">Icon (Font Awesome)</label><input asp-for="Icon" placeholder="fas fa-code" /><div class="hint">z. B. <code>fas fa-code</code>, <code>fas fa-palette</code></div></div>
+            <div class="field"><label asp-for="Order">Reihenfolge</label><input asp-for="Order" type="number" min="0" /></div>
+        </div>
+        <label class="switch"><input type="checkbox" asp-for="Status" /> Auf der Website anzeigen</label>
+        <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/services">Abbrechen</a></div>
+    </div>
+</form>

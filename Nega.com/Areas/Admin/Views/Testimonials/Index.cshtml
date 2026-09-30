@@ -1,0 +1,21 @@
+@model List<CustomerComment>
+@{ ViewData["Title"] = "Kundenstimmen"; }
+<div class="page-title"><div><h1>Kundenstimmen</h1><p>Bewertungen, die auf der Startseite angezeigt werden.</p></div>
+    <a class="btn btn-primary" href="/admin/testimonials/create"><i class="fas fa-plus"></i> Neue Kundenstimme</a></div>
+<div class="card"><div class="table-wrap"><table class="table">
+    <thead><tr><th>Kunde</th><th>Text</th><th>Bewertung</th><th>Datum</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td><div class="cell-main" style="min-width:180px"><img class="avatar-sm" src="@t.Picture" alt="" /><div><b>@t.NameSurname</b><small>@t.Brand</small></div></div></td>
+                <td><div class="clip">@t.Content</div></td>
+                <td style="color:#fbbf24;white-space:nowrap">@for (int i = 0; i < 5; i++) { <i class="@(i < t.Rating ? "fas" : "far") fa-star"></i> }</td>
+                <td class="muted">@t.Date.ToString("dd.MM.yyyy")</td>
+                <td>@await Html.PartialAsync("_Status", (t.Status, $"/admin/testimonials/toggle/{t.Id}", "Sichtbar", "Ausgeblendet"))</td>
+                <td><div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/testimonials/edit/@t.Id"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/testimonials/delete/{t.Id}", "Kundenstimme löschen?"))</div></td>
+            </tr>
+        }
+    </tbody>
+</table></div></div>

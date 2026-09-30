@@ -1,0 +1,109 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var s = Model.Stats;
+    var days = s.VisitorsLast14Days;
+    var max = Math.Max(1, days.Max(d => d.Count));
+    var last7 = days.Skip(7).Sum(d => d.Count); var prev7 = days.Take(7).Sum(d => d.Count);
+    var trend = prev7 == 0 ? 0 : (int)Math.Round((last7 - prev7) * 100.0 / prev7);
+    var catMax = Math.Max(1, s.BlogsPerCategory.DefaultIfEmpty().Max(c => c.Count));
+    const int W = 700, H = 220, pad = 28;
+    var bw = (W - pad) / (double)days.Count;
+}
+<div class="page-title">
+    <div>
+        <h1>Willkommen zurück 👋</h1>
+        <p>Hier ist ein Überblick über Ihre Website – @Fmt.Date(DateTime.Now).</p>
+    </div>
+    <div class="actions">
+        <a class="btn btn-ghost" href="/" target="_blank"><i class="fas fa-globe"></i> Website</a>
+        <a class="btn btn-primary" href="/admin/blogs/create"><i class="fas fa-plus"></i> Neuer Artikel</a>
+    </div>
+</div>
+
+<div class="row cols-4" style="margin-bottom:20px">
+    <div class="card stat"><div class="ico t-red"><i class="far fa-eye"></i></div><div><b>@Fmt.Num(s.VisitorsToday)</b><span>Besuche heute</span><small class="@(trend >= 0 ? "text-ok" : "")" style="color:@(trend >= 0 ? "#86efac" : "#ff8a80")">@(trend >= 0 ? "▲" : "▼") @Math.Abs(trend) % ggü. Vorwoche</small></div></div>
+    <div class="card stat"><div class="ico t-blue"><i class="far fa-newspaper"></i></div><div><b>@s.Blogs</b><span>Blogartikel</span><small class="muted">@s.Portfolios Referenzen · @s.Packages Pakete</small></div></div>
+    <div class="card stat"><div class="ico t-amber"><i class="far fa-comments"></i></div><div><b>@s.Comments</b><span>Kommentare</span><small><a href="/admin/comments?filter=pending" style="color:#fcd34d">@s.PendingComments warten auf Freigabe</a></small></div></div>
+    <div class="card stat"><div class="ico t-green"><i class="fas fa-users"></i></div><div><b>@s.Users</b><span>Benutzer</span><small class="muted">@s.Subscribers Newsletter-Abos</small></div></div>
+</div>
+
+<div class="row cols-main" style="margin-bottom:20px">
+    <div class="card">
+        <div class="card-head"><h3><i class="fas fa-chart-bar"></i> Besucher der letzten 14 Tage</h3><span class="badge b-gray">gesamt @Fmt.Num(s.VisitorsTotal)</span></div>
+        <div class="card-body">
+            <svg class="chart" viewBox="0 0 @W @(H + 24)" role="img" aria-label="Balkendiagramm der Besucher der letzten 14 Tage">
+                <defs><linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5a36" /><stop offset="1" stop-color="#e5140a" stop-opacity=".55" /></linearGradient></defs>
+                @for (int g = 0; g <= 4; g++)
+                {
+                    var y = H - (H - 10) * g / 4.0;
+                    <line class="grid-line" x1="@pad" x2="@W" y1="@y.ToString("0.0")" y2="@y.ToString("0.0")" />
+                    @Html.Raw($"<text x=\"0\" y=\"{(y + 4):0.0}\">{max * g / 4}</text>")
+                }
+                @for (int i = 0; i < days.Count; i++)
+                {
+                    var (day, c) = days[i];
+                    var h = (H - 10) * c / (double)max;
+                    var x = pad + i * bw + bw * .18;
+                    <rect class="bar" x="@x.ToString("0.0")" y="@((H - h).ToString("0.0"))" width="@((bw * .64).ToString("0.0"))" height="@h.ToString("0.0")" rx="4"><title>@Fmt.Date(day): @c Besuche</title></rect>
+                    @if (i % 2 == 1 || days.Count <= 7) { @Html.Raw($"<text x=\"{(x + bw * .32):0.0}\" y=\"{H + 18}\" text-anchor=\"middle\">{Fmt.Short(day)}</text>") }
+                }
+            </svg>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-head"><h3><i class="far fa-folder"></i> Artikel pro Kategorie</h3></div>
+        <div class="card-body hbar">
+            @foreach (var (name, count) in s.BlogsPerCategory)
+            {
+                <div><div class="lbl"><span>@name</span><b>@count</b></div><div class="track"><div class="fill" style="width:@(count * 100 / catMax)%"></div></div></div>
+            }
+            <div style="margin-top:8px"><div class="lbl"><span>Ungelesene Nachrichten</span><b>@s.UnreadContacts</b></div>
+                <a class="btn btn-ghost btn-sm" href="/admin/contacts?filter=unread" style="margin-top:6px"><i class="far fa-envelope"></i> Zum Posteingang</a></div>
+        </div>
+    </div>
+</div>
+
+<div class="row cols-3">
+    <div class="card">
+        <div class="card-head"><h3><i class="far fa-comments"></i> Neueste Kommentare</h3><a class="small muted" href="/admin/comments">Alle</a></div>
+        <ul class="feed">
+            @foreach (var c in Model.LatestComments)
+            {
+                <li>
+                    <span class="avatar">@ContentHelper.Initials(c.AuthorName)</span>
+                    <div style="min-width:0">
+                        <b>@c.AuthorName</b> @if (!c.Status) { <span class="badge b-amber">wartet</span> }
+                        <p class="clip" style="max-width:260px">@c.Content</p>
+                        <small><a href="/admin/comments/detail/@c.Id">@c.Blog?.Title</a> · @Fmt.Ago(c.Date)</small>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="card">
+        <div class="card-head"><h3><i class="far fa-envelope"></i> Neueste Nachrichten</h3><a class="small muted" href="/admin/contacts">Alle</a></div>
+        <ul class="feed">
+            @foreach (var m in Model.LatestContacts)
+            {
+                <li>
+                    <span class="ic @(m.IsRead ? "t-blue" : "t-red")"><i class="far @(m.IsRead ? "fa-envelope-open" : "fa-envelope")"></i></span>
+                    <div style="min-width:0"><a href="/admin/contacts/detail/@m.Id"><b>@m.Subject</b></a><p>@m.UserName</p><small>@Fmt.Ago(m.Date)</small></div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="card">
+        <div class="card-head"><h3><i class="fas fa-fire"></i> Beliebteste Artikel</h3></div>
+        <ul class="feed">
+            @{ var rank = 1; }
+            @foreach (var b in Model.TopBlogs)
+            {
+                <li>
+                    <span class="ic t-amber"><b>@(rank++)</b></span>
+                    <div style="min-width:0"><a href="/blog/@b.Id" target="_blank"><b>@b.Title</b></a><p>@Fmt.Num(b.ViewCount) Aufrufe · @b.Category?.Name</p></div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

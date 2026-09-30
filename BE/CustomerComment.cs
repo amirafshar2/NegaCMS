@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BE
 {
+    /// <summary>Customer testimonial shown on the home page.</summary>
     public class CustomerComment
     {
-        public int id { get; set; }
-        public string NameSurName { get; set; }
+        public int Id { get; set; }
+        public string NameSurname { get; set; }
         public string Brand { get; set; }
         public string Picture { get; set; }
         public string Email { get; set; }
         public string Content { get; set; }
-        public DateTime Date { get; set; }
-        public bool Status { get; set; }
+        public int Rating { get; set; } = 5;
+        public DateTime Date { get; set; } = DateTime.Now;
+        public bool Status { get; set; } = true;
     }
 }

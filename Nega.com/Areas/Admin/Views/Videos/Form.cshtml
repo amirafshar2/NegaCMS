@@ -1,0 +1,16 @@
+@model Video
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neues Video" : "Video bearbeiten"; }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/videos">Videos</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/videos/create" : $"/admin/videos/edit/{Model.Id}")">
+    <div class="form-grid">
+        <div class="card"><div class="card-body">
+            <div class="field"><label asp-for="Title">Titel</label><input asp-for="Title" required /></div>
+            <div class="field"><label asp-for="Content">Beschreibung</label><textarea asp-for="Content" rows="4"></textarea></div>
+            <div class="field"><label asp-for="VideoLink">YouTube-Link</label><input asp-for="VideoLink" type="url" placeholder="https://www.youtube.com/watch?v=…" required /></div>
+            <label class="switch"><input type="checkbox" asp-for="Status" /> Auf der Website anzeigen</label>
+            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/videos">Abbrechen</a></div>
+        </div></div>
+        <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Picture, "Vorschaubild", false))</div></div>
+    </div>
+</form>

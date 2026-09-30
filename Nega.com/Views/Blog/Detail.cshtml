@@ -1,0 +1,102 @@
+@model BlogDetailViewModel
+@{
+    var b = Model.Blog;
+    ViewData["Title"] = b.Title;
+    ViewData["Description"] = b.Summary;
+    var shareUrl = Uri.EscapeDataString($"{Context.Request.Scheme}://{Context.Request.Host}/blog/{b.Id}");
+    var commentCount = Model.Comments.Count + Model.Comments.Sum(c => c.Replies.Count);
+}
+<div class="container blog-layout">
+    <div>
+        <article class="card article">
+            <img class="cover" src="@b.Picture" alt="" width="1200" height="750" />
+            <div class="body">
+                <nav class="breadcrumb" style="justify-content:flex-start" aria-label="Brotkrumen"><a href="/">Start</a><span>/</span><a href="/blog">Blog</a><span>/</span><a href="/blog?category=@b.CategoryId">@b.Category?.Name</a></nav>
+                <h1>@b.Title</h1>
+                <div class="meta">
+                    <span><i class="far fa-user"></i>@b.User?.FullName</span>
+                    <span><i class="far fa-calendar"></i>@Fmt.Date(b.Date)</span>
+                    <span><i class="far fa-clock"></i>@b.ReadingMinutes Min. Lesezeit</span>
+                    <span><i class="far fa-eye"></i>@Fmt.Num(b.ViewCount) Aufrufe</span>
+                    <span><i class="far fa-comments"></i>@commentCount Kommentare</span>
+                </div>
+                <p class="summary">@b.Summary</p>
+                <div class="prose">@ContentHelper.ToHtml(b.Content)</div>
+
+                <div class="share">
+                    <span>Teilen:</span>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=@shareUrl" target="_blank" rel="noopener" aria-label="Auf LinkedIn teilen"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://api.whatsapp.com/send?text=@shareUrl" target="_blank" rel="noopener" aria-label="Per WhatsApp teilen"><i class="fab fa-whatsapp"></i></a>
+                    <a href="mailto:?subject=@Uri.EscapeDataString(b.Title)&body=@shareUrl" aria-label="Per E-Mail teilen"><i class="far fa-envelope"></i></a>
+                </div>
+
+                @if (b.User != null)
+                {
+                    <div class="author-box">
+                        <img src="@b.User.Picture" alt="" width="72" height="72" />
+                        <div><small class="muted">Geschrieben von</small><b style="display:block">@b.User.FullName</b><small class="muted">@b.User.JobTitle</small><p>@b.User.About</p></div>
+                    </div>
+                }
+            </div>
+        </article>
+
+        <!-- Comments -->
+        <section class="comments" id="comments" style="padding:0">
+            <h2 style="font-size:1.4rem">@commentCount Kommentare</h2>
+            @if (!Model.Comments.Any()) { <p class="muted">Noch keine Kommentare – schreiben Sie den ersten!</p> }
+            @foreach (var c in Model.Comments)
+            {
+                <div class="card comment" id="comment-@c.Id">
+                    <div class="comment-head">
+                        <div class="avatar">@if (c.User?.Picture != null) { <img src="@c.User.Picture" alt="" /> } else { @ContentHelper.Initials(c.AuthorName) }</div>
+                        <div><b>@c.AuthorName</b><small>@Fmt.Ago(c.Date)</small></div>
+                    </div>
+                    <p>@c.Content</p>
+                    @if (c.Replies.Any())
+                    {
+                        <div class="replies">
+                            @foreach (var r in c.Replies.OrderBy(r => r.CreatedAt))
+                            {
+                                <div class="reply-item">
+                                    <div class="comment-head">
+                                        <div class="avatar" style="width:36px;height:36px">@if (r.User?.Picture != null) { <img src="@r.User.Picture" alt="" /> } else { @ContentHelper.Initials(r.AuthorName) }</div>
+                                        <div><b>@r.AuthorName</b>@if (r.IsTeamReply) { <span class="team-badge">Team</span> }<small>@Fmt.Ago(r.CreatedAt)</small></div>
+                                    </div>
+                                    <p>@r.Content</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    <details class="reply-form">
+                        <summary><i class="fas fa-reply"></i> Antworten</summary>
+                        <form method="post" action="/blog/reply">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="blogId" value="@b.Id" />
+                            <input type="hidden" name="commentId" value="@c.Id" />
+                            <div class="field"><label for="rn-@c.Id">Name</label><input id="rn-@c.Id" name="authorName" value="@Model.Form.AuthorName" required maxlength="60" /></div>
+                            <div class="field"><label for="rc-@c.Id">Antwort</label><textarea id="rc-@c.Id" name="content" required maxlength="1500" style="min-height:90px"></textarea></div>
+                            <button class="btn btn-primary btn-sm" type="submit">Antwort senden</button>
+                        </form>
+                    </details>
+                </div>
+            }
+
+            <div class="card form-card" style="margin-top:28px">
+                <h3 style="font-size:1.2rem">Kommentar schreiben</h3>
+                <p class="muted" style="font-size:.9rem">Kommentare werden vor der Veröffentlichung von unserem Team geprüft. Ihre E-Mail-Adresse wird nicht veröffentlicht.</p>
+                <form method="post" action="/blog/comment">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="BlogId" value="@b.Id" />
+                    <div class="form-row">
+                        <div class="field"><label for="cmName">Name</label><input id="cmName" name="AuthorName" value="@Model.Form.AuthorName" required maxlength="60" autocomplete="name" /></div>
+                        <div class="field"><label for="cmMail">E-Mail</label><input id="cmMail" type="email" name="Email" value="@Model.Form.Email" required autocomplete="email" /></div>
+                    </div>
+                    <div class="field"><label for="cmText">Kommentar</label><textarea id="cmText" name="Content" required maxlength="1500"></textarea></div>
+                    <button class="btn btn-primary" type="submit"><i class="far fa-comment"></i> Kommentar senden</button>
+                </form>
+            </div>
+        </section>
+    </div>
+    @{ var side = (Model.Categories, Model.Related, "Ähnliche Artikel", (int?)b.CategoryId, (string)null); }
+    <partial name="_Sidebar" model="side" />
+</div>

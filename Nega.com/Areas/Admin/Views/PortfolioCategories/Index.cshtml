@@ -1,0 +1,16 @@
+@model List<PortfolioCategory>
+@{ ViewData["Title"] = "Referenz-Kategorien"; var counts = (Dictionary<int, int>)ViewBag.Counts; }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/portfolio">Referenzen</a> / Kategorien</div><h1>Referenz-Kategorien</h1><p>Filter-Buttons im Bereich „Referenzen“.</p></div>
+    <a class="btn btn-primary" href="/admin/portfoliocategories/create"><i class="fas fa-plus"></i> Neue Kategorie</a></div>
+<div class="card"><div class="table-wrap"><table class="table">
+    <thead><tr><th>Name</th><th>Beschreibung</th><th>Projekte</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr><td><b>@c.Name</b></td><td class="muted">@c.Description</td><td>@(counts.TryGetValue(c.Id, out var n) ? n : 0)</td>
+                <td>@await Html.PartialAsync("_Status", (c.Status, $"/admin/portfoliocategories/toggle/{c.Id}", "Aktiv", "Inaktiv"))</td>
+                <td><div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/portfoliocategories/edit/@c.Id"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/portfoliocategories/delete/{c.Id}", "Kategorie löschen?"))</div></td></tr>
+        }
+    </tbody>
+</table></div></div>

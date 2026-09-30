@@ -1,0 +1,19 @@
+@model Success
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neuer Zähler" : "Zähler bearbeiten"; }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/counters">Zähler</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" action="@(isNew ? "/admin/counters/create" : $"/admin/counters/edit/{Model.Id}")" class="card" style="max-width:760px">
+    <div class="card-body">
+        <div class="field"><label asp-for="Title">Bezeichnung</label><input asp-for="Title" required /></div>
+        <div class="field-row">
+            <div class="field"><label asp-for="TotalSuccess">Wert</label><input asp-for="TotalSuccess" type="number" min="0" /></div>
+            <div class="field"><label asp-for="Suffix">Zusatz</label><input asp-for="Suffix" placeholder="+ oder %" maxlength="5" /></div>
+        </div>
+        <div class="field-row">
+            <div class="field"><label asp-for="Icon">Icon (Font Awesome)</label><input asp-for="Icon" placeholder="fas fa-award" /></div>
+            <div class="field"><label asp-for="Order">Reihenfolge</label><input asp-for="Order" type="number" min="0" /></div>
+        </div>
+        <label class="switch"><input type="checkbox" asp-for="Status" /> Anzeigen</label>
+        <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/counters">Abbrechen</a></div>
+    </div>
+</form>

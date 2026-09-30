@@ -1,0 +1,23 @@
+@model CustomerComment
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neue Kundenstimme" : "Kundenstimme bearbeiten"; if (isNew && Model.Rating == 0) { Model.Rating = 5; } }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/testimonials">Kundenstimmen</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/testimonials/create" : $"/admin/testimonials/edit/{Model.Id}")">
+    <div class="form-grid">
+        <div class="card"><div class="card-body">
+            <div class="field-row">
+                <div class="field"><label asp-for="NameSurname">Name</label><input asp-for="NameSurname" required /></div>
+                <div class="field"><label asp-for="Brand">Firma / Marke</label><input asp-for="Brand" /></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label asp-for="Email">E-Mail</label><input asp-for="Email" type="email" /></div>
+                <div class="field"><label asp-for="Rating">Bewertung (1–5)</label><input asp-for="Rating" type="number" min="1" max="5" /></div>
+            </div>
+            <div class="field"><label asp-for="Content">Text</label><textarea asp-for="Content" rows="5" required></textarea></div>
+            <input type="hidden" asp-for="Date" />
+            <label class="switch"><input type="checkbox" asp-for="Status" /> Auf der Website anzeigen</label>
+            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/testimonials">Abbrechen</a></div>
+        </div></div>
+        <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Picture, "Foto", true))</div></div>
+    </div>
+</form>

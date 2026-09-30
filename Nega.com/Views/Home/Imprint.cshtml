@@ -1,0 +1,12 @@
+@model OurContact
+@{ ViewData["Title"] = "Impressum"; }
+<div class="page-head"><div class="container"><span class="eyebrow">Rechtliches</span><h1>Impressum</h1></div></div>
+<div class="container legal">
+    <div class="alert alert-err"><i class="fas fa-info-circle"></i><span>Demo-Website: „@Model.CompanyName“ ist ein fiktives Unternehmen. Die Kontaktdaten auf dieser Seite sind Platzhalter.</span></div>
+    <h2>Projekt</h2>
+    <p>Portfolio-Projekt von Amir Reza Afshar – Umschüler Fachinformatiker für Anwendungsentwicklung.<br />Quellcode: <a href="https://github.com/amirafshar2/NegaCMS" target="_blank" rel="noopener" style="text-decoration:underline">github.com/amirafshar2/NegaCMS</a></p>
+    <h2>Fiktive Firmenangaben (Demo)</h2>
+    <p>@Model.CompanyName<br />@Model.Address<br />Telefon: @Model.PhoneNumber<br />E-Mail: @Model.Email</p>
+    <h2>Haftung für Inhalte</h2>
+    <p>Alle Inhalte (Texte, Referenzen, Kundenstimmen, Preise) sind Beispielinhalte zu Demonstrationszwecken.</p>
+</div>

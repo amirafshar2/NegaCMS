@@ -1,0 +1,20 @@
+@model List<Services>
+@{ ViewData["Title"] = "Leistungen"; }
+<div class="page-title"><div><h1>Leistungen</h1><p>Die Leistungen erscheinen im Bereich „Leistungen“ auf der Startseite (sortiert nach Reihenfolge).</p></div>
+    <a class="btn btn-primary" href="/admin/services/create"><i class="fas fa-plus"></i> Neue Leistung</a></div>
+<div class="cards-grid">
+    @foreach (var s in Model)
+    {
+        <div class="card item-card">
+            <div class="body">
+                <div class="stat" style="padding:0 0 12px"><div class="ico t-red"><i class="@s.Icon"></i></div><div><b style="font-size:1.05rem">@s.Title</b><span>Position @s.Order</span></div></div>
+                <p class="muted small" style="margin:0">@s.Content</p>
+            </div>
+            <div class="foot">
+                @await Html.PartialAsync("_Status", (s.Status, $"/admin/services/toggle/{s.Id}", "Sichtbar", "Ausgeblendet"))
+                <div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/services/edit/@s.Id" title="Bearbeiten"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/services/delete/{s.Id}", $"Leistung „{s.Title}“ löschen?"))</div>
+            </div>
+        </div>
+    }
+</div>

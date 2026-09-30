@@ -1,0 +1,20 @@
+@model About
+@{ ViewData["Title"] = "Über uns"; }
+<div class="page-title"><div><h1>Über uns</h1><p>Inhalt des Abschnitts „Über uns“ auf der Startseite.</p></div><a class="btn btn-ghost" href="/#about" target="_blank"><i class="far fa-eye"></i> Ansehen</a></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="/admin/about">
+    <div class="form-grid">
+        <div class="card"><div class="card-body">
+            <div class="field-row">
+                <div class="field"><label asp-for="Title">Überschrift (klein)</label><input asp-for="Title" required /></div>
+                <div class="field"><label asp-for="FoundedYear">Gründungsjahr</label><input asp-for="FoundedYear" type="number" min="1900" max="2100" /></div>
+            </div>
+            <div class="field"><label asp-for="Subtitle">Titel</label><input asp-for="Subtitle" /></div>
+            <div class="field"><label asp-for="Content">Absatz 1</label><textarea asp-for="Content" rows="5" required></textarea></div>
+            <div class="field"><label asp-for="Content2">Absatz 2</label><textarea asp-for="Content2" rows="5"></textarea></div>
+            <label class="switch"><input type="checkbox" asp-for="Status" /> Abschnitt anzeigen</label>
+            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button></div>
+        </div></div>
+        <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Image, "Bild", false))</div></div>
+    </div>
+</form>

@@ -1,173 +1,58 @@
-﻿@{
-    ViewData["Title"] = "Index";
-    Layout = "~/areas/admin/views/shared/adminlayout.cshtml";
+@model User
+@{
+    ViewData["Title"] = "Mein Profil";
+    var roles = (IList<string>)ViewBag.Roles;
+    var blogs = (List<Blog>)ViewBag.MyBlogs;
 }
-
-@model Negacom.Areas.Admin.Models.UserModel
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: rgb(99, 39, 120)
-        }
-
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #BA68C8
-        }
-
-        .profile-button {
-            background: rgb(99, 39, 120);
-            box-shadow: none;
-            border: none
-        }
-
-            .profile-button:hover {
-                background: #682773
-            }
-
-            .profile-button:focus {
-                background: #682773;
-                box-shadow: none
-            }
-
-            .profile-button:active {
-                background: #682773;
-                box-shadow: none
-            }
-
-        .back:hover {
-            color: #682773;
-            cursor: pointer
-        }
-
-        .labels {
-            font-size: 11px
-        }
-
-        .add-experience:hover {
-            background: #BA68C8;
-            color: #fff;
-            cursor: pointer;
-            border: solid 1px #BA68C8
-        }
-    </style>
-</head>
-
-
-<body>
-
-
-
-
-
-
-    <div class="" mt-5 mb-5">
-        <div class="row">
-            <div class="col-md-3 border-right">
-                <div class="d-flex flex-column align-items-center text-center "><img class="rounded-circle mt-5" width="150px" src="~/image/Pack/@Model.picstring"><span class="font-weight-bold">@Model.Name  @Model.Family</span><span class="text-black-50">@Model.Email</span><span> </span></div>
-            </div>
-            <div class="col-md-9 border-right">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="text-right">Profile Settings</h4>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control"  placeholder="" value="@Model.Name"></div>
-                        <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="@Model.Family" placeholder=""></div>
-                        <div class="col-md-6"><label class="labels">UserName</label><input type="text" class="form-control" value="@Model.UserName" placeholder=""></div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="" value="@Model.PhoneNumber"></div>
-                        <div class="col-md-12"><label class="labels">Address </label><input type="text" class="form-control" placeholder="@Model.Adress" value=""></div>
-                        <div class="col-md-12"><label class="labels">Status</label><input type="text" class="form-control" placeholder="" value="@Model.Status"></div>
-                        <div class="col-md-12"><label class="labels">StatusİnCompany</label><input type="text" class="form-control" placeholder="" value="@Model.StatusİnCompany"></div>
-                        <div class="col-md-12"><label class="labels">Aboute</label><input type="text" class="form-control" placeholder="" value="@Model.About"></div>
-                        <div class="col-md-12"><label class="labels">Facebook</label><input type="text" class="form-control" placeholder="" value="@Model.Facebook"></div>
-                        <div class="col-md-12"><label class="labels">İnstagram</label><input type="text" class="form-control" placeholder="" value="@Model.İnstagram"></div>
-                        <div class="col-md-12"><label class="labels">Telegram</label><input type="text" class="form-control" placeholder="" value="@Model.Telegram"></div>
-                    </div>
-                
-                    <div class="mt-5 text-center"> <a href="~/Admin/User/Update/@Model.Id" class="btn btn-primary profile-button">Edit profile</a></div>
-                </div>
-            </div>
-            
+<div class="card" style="margin-bottom:20px">
+    <div class="profile-head">
+        <img src="@Model.Picture" alt="" width="96" height="96" />
+        <div>
+            <h1 style="font-size:1.5rem;margin:0">@Model.FullName</h1>
+            <p class="muted" style="margin:2px 0 8px">@Model.JobTitle · <code>@Model.UserName</code></p>
+            @foreach (var r in roles) { <span class="badge b-red" style="margin-inline-end:4px">@r</span> }
+            <span class="badge b-gray">Mitglied seit @Model.RegisterDate.ToString("MM/yyyy")</span>
         </div>
     </div>
-   
-
-
-    @*<div class="row py-5 px-4">
-        <div class="col-md-12 mx-auto">
-            <!-- Profile widget -->
-            <div class="bg-white shadow rounded overflow-hidden">
-                <div class="px-4 pt-0 pb-4 cover">
-                    <div class="media align-items-end profile-head">
-                        <div class="profile mr-3">
-                            <img src="~/image/Pack/@Model.picstring" alt="Profil Resmi Seç" width="130" class="rounded mb-2 img-thumbnail">
-                            <a href="~/Admin/User/Update/@Model.Id" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
-                        </div>
-                        <div class="media-body  mb-5 text-white">
-                            <h4 class="mt-0 mb-0">@Model.Name @Model.Family</h4>
-                            <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i>@Model.Email</p>
-                        </div>
-                    </div>
-                </div> <div class="bg-light p-4 d-flex justify-content-end text-center">
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item">
-                            <h5 class="font-weight-bold mb-0 d-block"></h5><small class="text-muted">
-                                <a title="Facebook" href="@Model.Facebook"><i class="fa fa-facebook"></i></a>   Facebook
-                            </small>
-                        </li>
-                        <li class="list-inline-item">
-                            <h5 class="font-weight-bold mb-0 d-block"></h5><small class="text-muted">
-                                <a title="Instagram" href="@Model.İnstagram"><i class="fa fa-instagram"></i></a>   İnstagram
-                            </small>
-                        </li>
-                        <li class="list-inline-item">
-                            <h5 class="font-weight-bold mb-0 d-block"></h5><small class="text-muted">
-                                <a title="Telegram" href="@Model.Telegram"><i class="fa fa-telegram"></i></a>   Telegram
-                            </small>
-                        </li>
-                    </ul>
-                </div> <div class="px-4 py-3">
-                    <h5 class="mb-0">About</h5> <div class="p-4 rounded shadow-sm bg-light">
-                        <p class="font-italic mb-0"><strong>Status İn Company :</strong>@Model.StatusİnCompany</p> <p class="font-italic mb-0"><strong>About :</strong>@Model.About</p>
-                        <p class="font-italic mb-0"><strong>UserName :</strong> @Model.UserName</p>
-                        <p class="font-italic mb-0"><strong>Address :</strong> @Model.Adress</p>
-                        <p class="font-italic mb-0"><strong>PhoneNumber :</strong> @Model.PhoneNumber</p>
-                    </div>
-                </div> <div class="py-4 px-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="mb-0">YourBlogs</h5>
-                        <a href="~/Admin/Blog/Index" class="btn btn-link text-muted">
-                            Show all Blogs
-                        </a>
-
-                    </div> <div class="row">
-                        @await Component.InvokeAsync("GetUserBlogForProfile")
-                    </div>
-
-
-                </div>
+</div>
+<div class="row cols-main">
+    <div class="card">
+        <div class="card-head"><h3><i class="far fa-user"></i> Profil bearbeiten</h3></div>
+        <form asp-antiforgery="true" class="card-body" method="post" enctype="multipart/form-data" action="/admin/profile/update">
+            <div class="field-row">
+                <div class="field"><label for="pn">Vorname</label><input id="pn" name="name" value="@Model.Name" required /></div>
+                <div class="field"><label for="pf">Nachname</label><input id="pf" name="family" value="@Model.Family" /></div>
             </div>
+            <div class="field-row">
+                <div class="field"><label for="pj">Position</label><input id="pj" name="jobTitle" value="@Model.JobTitle" /></div>
+                <div class="field"><label for="pp">Telefon</label><input id="pp" name="phoneNumber" value="@Model.PhoneNumber" /></div>
+            </div>
+            <div class="field"><label for="pa">Über mich</label><textarea id="pa" name="about" rows="3">@Model.About</textarea><div class="hint">Wird unter Ihren Blogartikeln angezeigt.</div></div>
+            <div class="field-row">
+                <div class="field"><label for="pl">LinkedIn</label><input id="pl" name="linkedIn" value="@Model.LinkedIn" type="url" /></div>
+                <div class="field"><label for="pi">Instagram</label><input id="pi" name="instagram" value="@Model.Instagram" type="url" /></div>
+            </div>
+            @await Html.PartialAsync("_ImageField", (Model.Picture, "Profilbild", true))
+            <button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Profil speichern</button>
+        </form>
+    </div>
+    <div style="display:grid;gap:20px;align-content:start">
+        <div class="card">
+            <div class="card-head"><h3><i class="fas fa-lock"></i> Passwort ändern</h3></div>
+            <form asp-antiforgery="true" class="card-body" method="post" action="/admin/profile/password">
+                @if ((bool)ViewBag.DemoMode && Model.IsDemo) { <div class="alert alert-info small"><i class="fas fa-info-circle"></i><span>Im Demo-Modus deaktiviert.</span></div> }
+                <div class="field"><label for="c1">Aktuelles Passwort</label><input id="c1" name="Current" type="password" autocomplete="current-password" /></div>
+                <div class="field"><label for="c2">Neues Passwort</label><input id="c2" name="New" type="password" autocomplete="new-password" /></div>
+                <div class="field"><label for="c3">Wiederholen</label><input id="c3" name="Confirm" type="password" autocomplete="new-password" /></div>
+                <button class="btn btn-ghost" type="submit" disabled="@((bool)ViewBag.DemoMode && Model.IsDemo)">Passwort ändern</button>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-head"><h3><i class="far fa-newspaper"></i> Meine Artikel (@blogs.Count)</h3></div>
+            <ul class="feed">
+                @foreach (var b in blogs.Take(6)) { <li><div><a href="/admin/blogs/edit/@b.Id"><b>@b.Title</b></a><p>@Fmt.Num(b.ViewCount) Aufrufe · @b.Date.ToString("dd.MM.yyyy")</p></div></li> }
+                @if (!blogs.Any()) { <li class="muted">Noch keine Artikel.</li> }
+            </ul>
         </div>
     </div>
-    *@<!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-    <!-- Bootstrap Bundle JS (includes Popper) -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-
+</div>

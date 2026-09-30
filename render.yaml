@@ -1,0 +1,14 @@
+# Render Blueprint – free web service running the Docker image (region Frankfurt)
+services:
+  - type: web
+    name: nega-cms-demo
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: Demo__Enabled
+        value: "true"
+      - key: Demo__ResetMinutes
+        value: "60"

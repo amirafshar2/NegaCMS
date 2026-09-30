@@ -1,0 +1,58 @@
+@model BlogIndexViewModel
+@{
+    ViewData["Title"] = "Blogartikel";
+    var b = Model.Blogs;
+    string PageUrl(int p) => $"/admin/blogs?page={p}&q={Uri.EscapeDataString(Model.Search ?? "")}&category={Model.CategoryId}";
+}
+<div class="page-title">
+    <div><h1>Blogartikel</h1><p>@(Model.OnlyOwn ? "Als Autor sehen und bearbeiten Sie nur Ihre eigenen Artikel." : "Alle Artikel verwalten, veröffentlichen oder ausblenden.")</p></div>
+    <a class="btn btn-primary" href="/admin/blogs/create"><i class="fas fa-plus"></i> Neuer Artikel</a>
+</div>
+<div class="card">
+    <form class="toolbar" method="get" action="/admin/blogs">
+        <input class="input" name="q" value="@Model.Search" placeholder="Titel oder Inhalt suchen…" style="max-width:280px" aria-label="Suchen" />
+        <select class="input" name="category" style="max-width:220px" aria-label="Kategorie" onchange="this.form.submit()">
+            <option value="">Alle Kategorien</option>
+            @foreach (var c in Model.Categories) { <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">@c.Name</option> }
+        </select>
+        <button class="btn btn-ghost" type="submit"><i class="fas fa-search"></i> Filtern</button>
+        <span class="grow"></span>
+        <span class="muted small">@b.Total Artikel</span>
+    </form>
+    @if (!b.Items.Any())
+    {
+        <div class="empty"><i class="far fa-newspaper"></i><p>Keine Artikel gefunden.</p><a class="btn btn-primary" href="/admin/blogs/create">Ersten Artikel schreiben</a></div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Artikel</th><th>Kategorie</th><th>Autor</th><th>Datum</th><th>Aufrufe</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var x in b.Items)
+                    {
+                        <tr>
+                            <td><div class="cell-main"><img class="thumb" src="@x.Picture" alt="" /><div><b>@x.Title</b><small>@x.ReadingMinutes Min. Lesezeit</small></div></div></td>
+                            <td><span class="badge b-blue">@x.Category?.Name</span></td>
+                            <td>@x.User?.FullName</td>
+                            <td class="muted">@x.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@Fmt.Num(x.ViewCount)</td>
+                            <td>@await Html.PartialAsync("_Status", (x.Status, $"/admin/blogs/toggle/{x.Id}", "Veröffentlicht", "Entwurf"))</td>
+                            <td><div class="actions">
+                                <a class="btn btn-ghost btn-icon" href="/blog/@x.Id" target="_blank" title="Ansehen"><i class="far fa-eye"></i></a>
+                                <a class="btn btn-ghost btn-icon" href="/admin/blogs/edit/@x.Id" title="Bearbeiten"><i class="far fa-edit"></i></a>
+                                @await Html.PartialAsync("_Delete", ($"/admin/blogs/delete/{x.Id}", $"Artikel „{x.Title}“ wirklich löschen? Alle Kommentare werden ebenfalls gelöscht."))
+                            </div></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (b.TotalPages > 1)
+        {
+            <div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0;justify-content:center">
+                @for (int i = 1; i <= b.TotalPages; i++) { <a class="btn btn-sm @(i == b.Page ? "btn-primary" : "btn-ghost")" href="@PageUrl(i)">@i</a> }
+            </div>
+        }
+    }
+</div>

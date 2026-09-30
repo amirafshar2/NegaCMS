@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <!-- Package versions (central) -->
+    <EfCoreVersion Condition="'$(EfCoreVersion)' == ''">8.0.11</EfCoreVersion>
+    <FluentValidationVersion Condition="'$(FluentValidationVersion)' == ''">11.9.1</FluentValidationVersion>
+  </PropertyGroup>
+</Project>

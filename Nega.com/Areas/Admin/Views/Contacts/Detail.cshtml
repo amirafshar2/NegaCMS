@@ -1,0 +1,21 @@
+@model Contact
+@{ ViewData["Title"] = "Nachricht"; }
+<div class="page-title">
+    <div><div class="crumbs"><a href="/admin/contacts">Nachrichten</a> / Detail</div><h1>@Model.Subject</h1></div>
+    <div class="actions">
+        <a class="btn btn-primary" href="mailto:@Model.Mail?subject=@Uri.EscapeDataString("Re: " + Model.Subject)"><i class="fas fa-reply"></i> Per E-Mail antworten</a>
+        <form asp-antiforgery="true" method="post" action="/admin/contacts/markunread/@Model.Id"><button class="btn btn-ghost" type="submit"><i class="far fa-envelope"></i> Als ungelesen markieren</button></form>
+        @await Html.PartialAsync("_Delete", ($"/admin/contacts/delete/{Model.Id}", "Nachricht löschen?"))
+    </div>
+</div>
+<div class="row cols-main">
+    <div class="card"><div class="card-body"><div class="msg"><p>@Model.Message</p></div></div></div>
+    <div class="card"><div class="card-body">
+        <dl class="kv">
+            <dt>Name</dt><dd>@Model.UserName</dd>
+            <dt>E-Mail</dt><dd>@Model.Mail</dd>
+            <dt>Eingang</dt><dd>@Fmt.DateTime(Model.Date)</dd>
+            <dt>Status</dt><dd><span class="badge b-green">gelesen</span></dd>
+        </dl>
+    </div></div>
+</div>

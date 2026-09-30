@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace BE
 {
+    /// <summary>Counter shown on the home page (e.g. "120 finished projects").</summary>
     public class Success
     {
-        public int id { get; set; }
-        public string Tİtle { get; set; }
-        public string Icone { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Icon { get; set; }
         public int TotalSuccess { get; set; }
-        public DateTime Date { get; set; }
-        public bool Status { get; set; }
+        public string Suffix { get; set; }
+        public int Order { get; set; }
+        public bool Status { get; set; } = true;
     }
 }

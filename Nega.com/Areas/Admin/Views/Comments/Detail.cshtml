@@ -1,0 +1,43 @@
+@model Comment
+@{ ViewData["Title"] = "Kommentar"; }
+<div class="page-title">
+    <div><div class="crumbs"><a href="/admin/comments">Kommentare</a> / Detail</div><h1>Kommentar von @Model.AuthorName</h1><p>zu „<a href="/blog/@Model.BlogId" target="_blank" style="text-decoration:underline">@Model.Blog?.Title</a>“</p></div>
+    <div class="actions">
+        <form asp-antiforgery="true" method="post" action="/admin/comments/toggle/@Model.Id?back=detail">
+            <button class="btn @(Model.Status ? "btn-ghost" : "btn-ok")" type="submit"><i class="fas @(Model.Status ? "fa-eye-slash" : "fa-check")"></i> @(Model.Status ? "Ausblenden" : "Freigeben")</button></form>
+        @await Html.PartialAsync("_Delete", ($"/admin/comments/delete/{Model.Id}", "Kommentar inkl. Antworten löschen?"))
+    </div>
+</div>
+<div class="row cols-main">
+    <div class="card"><div class="card-body thread">
+        <div class="msg">
+            <div class="top"><span class="avatar">@ContentHelper.Initials(Model.AuthorName)</span><b>@Model.AuthorName</b><small>@Model.Email · @Fmt.DateTime(Model.Date)</small>
+                <span class="badge @(Model.Status ? "b-green" : "b-amber")">@(Model.Status ? "Freigegeben" : "Wartet auf Freigabe")</span></div>
+            <p>@Model.Content</p>
+        </div>
+        @foreach (var r in Model.Replies.OrderBy(r => r.CreatedAt))
+        {
+            <div class="msg @(r.IsTeamReply ? "team" : "reply")">
+                <div class="top">
+                    <span class="avatar">@if (r.User?.Picture != null) { <img src="@r.User.Picture" alt="" /> } else { @ContentHelper.Initials(r.AuthorName) }</span>
+                    <b>@r.AuthorName</b> @if (r.IsTeamReply) { <span class="badge b-red">Team</span> }
+                    <small>@Fmt.DateTime(r.CreatedAt)</small>
+                    <span style="margin-inline-start:auto" class="actions">
+                        <form asp-antiforgery="true" method="post" action="/admin/comments/togglereply/@r.Id?commentId=@Model.Id" class="toggle-form">
+                            <button type="submit"><span class="badge @(r.Status ? "b-green" : "b-amber")">@(r.Status ? "Sichtbar" : "Wartet")</span></button></form>
+                        @await Html.PartialAsync("_Delete", ($"/admin/comments/deletereply/{r.Id}?commentId={Model.Id}", "Antwort löschen?"))
+                    </span>
+                </div>
+                <p>@r.Content</p>
+            </div>
+        }
+    </div></div>
+    <div class="card">
+        <div class="card-head"><h3><i class="fas fa-reply"></i> Als Team antworten</h3></div>
+        <form asp-antiforgery="true" class="card-body" method="post" action="/admin/comments/reply/@Model.Id">
+            <div class="field"><label for="replyText">Antwort</label><textarea id="replyText" name="content" rows="6" required maxlength="1500"></textarea>
+                <div class="hint">Die Antwort erscheint sofort mit „Team“-Kennzeichnung. Ein wartender Kommentar wird dabei automatisch freigegeben.</div></div>
+            <button class="btn btn-primary" type="submit"><i class="far fa-paper-plane"></i> Antwort veröffentlichen</button>
+        </form>
+    </div>
+</div>

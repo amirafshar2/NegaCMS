@@ -1,58 +1,58 @@
-﻿using BLL.Concrate;
-using DAL.EntityFrameWork;
-using Microsoft.AspNetCore.Authorization;
+using BE;
+using BLL.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Negacom.Areas.Admin.Models;
-using System;
-using System.Security.Claims;
+using Negacom.Infrastructure;
+
 namespace Negacom.Areas.Admin.Controllers
 {
-
-    [Authorize(Roles = "Admin,Moderator,Writer,User")]  
-    [Area("Admin")]
-    public class ProfileController : Controller
+    public class ProfileController : AdminControllerBase
     {
-        UserManegerloc _userbll = new UserManegerloc(new EFUserRepository());
+        private readonly UserManager<User> _users;
+        private readonly SignInManager<User> _signIn;
+        private readonly IBlogService _blogs;
+        private readonly DemoOptions _demo;
 
-        public IActionResult Index()
+        public ProfileController(UserManager<User> users, SignInManager<User> signIn, IBlogService blogs, IOptions<DemoOptions> demo)
         {
-            var user = HttpContext.User;
-            if (user.Identity.IsAuthenticated)
-            {
-                // Kullanıcının kimlik doğrulama bilgileri alındı
-                var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            _users = users; _signIn = signIn; _blogs = blogs; _demo = demo.Value;
+        }
 
-                var uuser = _userbll.GetById(Convert.ToInt32(userId));
-                // Örneğin, bu kimliği kullanarak kullanıcı verilerini veritabanından çekebilirsiniz
-                
-                UserModel u = new UserModel() {
-                    Name = uuser.Name,
-                    Family = uuser.Family,
-                    Id = uuser.Id,
-                    Email = uuser.Email,
-                    picstring = uuser.Picture,
-                    PhoneNumber= uuser.PhoneNumber,
-                    Adress=uuser.Address,
-                    Status=uuser.Status,
-                    StatusİnCompany=uuser.StatusİnCompany,
-                    About=uuser.About,
-                    Facebook=uuser.Facebook,
-                    İnstagram=uuser.İnstagram,
-                    Telegram=uuser.Telegram,
-                    UserName=uuser.UserName
+        public async Task<IActionResult> Index()
+        {
+            var me = await _users.GetUserAsync(User);
+            ViewBag.Roles = await _users.GetRolesAsync(me);
+            ViewBag.MyBlogs = _blogs.GetPaged(false, null, null, 1, 1000).Items.Where(b => b.UserId == me.Id).ToList();
+            ViewBag.DemoMode = _demo.Enabled;
+            return View(me);
+        }
 
-                };
-                // Bu bilgileri bir View'e geçirerek Index sayfasını döndür
-                return View(u);
-            }
-            else
-            {
-                // Kullanıcı kimliği doğrulanamadı, belki oturum açmamıştır
-                // Bu duruma göre bir işlem yapılabilir, örneğin oturum açma sayfasına yönlendirilebilir
-                return RedirectToAction("Index", "Login");
-                
-            }
+        [HttpPost]
+        public async Task<IActionResult> Update(string name, string family, string jobTitle, string about, string phoneNumber, string linkedIn, string instagram)
+        {
+            var me = await _users.GetUserAsync(User);
+            if (string.IsNullOrWhiteSpace(name)) { Error("Bitte einen Vornamen eingeben."); return RedirectToAction(nameof(Index)); }
+            me.Name = name.Trim(); me.Family = family?.Trim(); me.JobTitle = jobTitle; me.About = about;
+            me.PhoneNumber = phoneNumber; me.LinkedIn = linkedIn; me.Instagram = instagram;
+            if (!TryUpload(url => me.Picture = url)) { Error(string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))); return RedirectToAction(nameof(Index)); }
+            await _users.UpdateAsync(me);
+            Ok("Ihr Profil wurde gespeichert.");
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Password(PasswordModel m)
+        {
+            var me = await _users.GetUserAsync(User);
+            if (_demo.Enabled && me.IsDemo) { Error("Im Demo-Modus kann das Passwort der Demo-Konten nicht geändert werden."); return RedirectToAction(nameof(Index)); }
+            if (m.New != m.Confirm) { Error("Die Passwörter stimmen nicht überein."); return RedirectToAction(nameof(Index)); }
+            var res = await _users.ChangePasswordAsync(me, m.Current ?? "", m.New ?? "");
+            if (!res.Succeeded) { Error(string.Join(" ", res.Errors.Select(e => e.Description))); return RedirectToAction(nameof(Index)); }
+            await _signIn.RefreshSignInAsync(me);
+            Ok("Ihr Passwort wurde geändert.");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

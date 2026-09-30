@@ -1,0 +1,17 @@
+@model List<Success>
+@{ ViewData["Title"] = "Zähler"; }
+<div class="page-title"><div><h1>Zähler</h1><p>Kennzahlen im Bereich „Über uns“ (z. B. abgeschlossene Projekte).</p></div>
+    <a class="btn btn-primary" href="/admin/counters/create"><i class="fas fa-plus"></i> Neuer Zähler</a></div>
+<div class="row cols-4">
+    @foreach (var c in Model)
+    {
+        <div class="card">
+            <div class="stat"><div class="ico t-amber"><i class="@c.Icon"></i></div><div><b>@Fmt.Num(c.TotalSuccess)@c.Suffix</b><span>@c.Title</span></div></div>
+            <div class="toolbar" style="border-top:1px solid var(--line);border-bottom:0;justify-content:space-between">
+                @await Html.PartialAsync("_Status", (c.Status, $"/admin/counters/toggle/{c.Id}", "Sichtbar", "Ausgeblendet"))
+                <div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/counters/edit/@c.Id"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/counters/delete/{c.Id}", "Zähler löschen?"))</div>
+            </div>
+        </div>
+    }
+</div>

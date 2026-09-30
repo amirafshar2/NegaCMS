@@ -1,0 +1,19 @@
+@model List<Video>
+@{ ViewData["Title"] = "Videos"; }
+<div class="page-title"><div><h1>Videos</h1><p>Das erste sichtbare Video wird auf der Startseite gezeigt. YouTube wird erst nach Klick geladen (DSGVO).</p></div>
+    <a class="btn btn-primary" href="/admin/videos/create"><i class="fas fa-plus"></i> Neues Video</a></div>
+<div class="cards-grid">
+    @foreach (var v in Model)
+    {
+        <div class="card item-card">
+            <img class="cover" src="@v.Picture" alt="" />
+            <div class="body"><b>@v.Title</b><p class="muted small" style="margin:6px 0 0">@v.Content</p>
+                <p class="small" style="margin:8px 0 0"><i class="fab fa-youtube" style="color:#ff5a36"></i> <a href="@v.VideoLink" target="_blank" rel="noopener">@v.VideoLink</a></p></div>
+            <div class="foot">
+                @await Html.PartialAsync("_Status", (v.Status, $"/admin/videos/toggle/{v.Id}", "Sichtbar", "Ausgeblendet"))
+                <div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/videos/edit/@v.Id"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/videos/delete/{v.Id}", "Video löschen?"))</div>
+            </div>
+        </div>
+    }
+</div>

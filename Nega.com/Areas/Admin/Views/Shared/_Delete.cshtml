@@ -1,0 +1,5 @@
+@model (string Url, string Confirm)
+<form asp-antiforgery="true" method="post" action="@Model.Url" data-confirm="@Model.Confirm">
+    
+    <button class="btn btn-danger btn-icon" type="submit" title="Löschen" aria-label="Löschen"><i class="far fa-trash-alt"></i></button>
+</form>

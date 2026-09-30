@@ -1,0 +1,41 @@
+@model List<(Category Category, int BlogCount)>
+@{
+    ViewData["Title"] = "Kategorien";
+    var edit = ViewBag.Edit as Category;
+}
+<div class="page-title"><div><h1>Blog-Kategorien</h1><p>Kategorien mit Artikeln können nicht gelöscht werden (Geschäftsregel in der BLL).</p></div></div>
+<div class="row cols-main">
+    <div class="card">
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>Name</th><th>Beschreibung</th><th>Artikel</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var (c, n) in Model)
+                    {
+                        <tr>
+                            <td><b>@c.Name</b></td>
+                            <td class="muted">@c.Description</td>
+                            <td><a href="/admin/blogs?category=@c.Id">@n</a></td>
+                            <td>@await Html.PartialAsync("_Status", (c.Status, $"/admin/categories/toggle/{c.Id}", "Aktiv", "Inaktiv"))</td>
+                            <td><div class="actions">
+                                <a class="btn btn-ghost btn-icon" href="/admin/categories?edit=@c.Id" title="Bearbeiten"><i class="far fa-edit"></i></a>
+                                @await Html.PartialAsync("_Delete", ($"/admin/categories/delete/{c.Id}", $"Kategorie „{c.Name}“ löschen?"))
+                            </div></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-head"><h3><i class="fas @(edit == null ? "fa-plus" : "fa-edit")"></i> @(edit == null ? "Neue Kategorie" : "Kategorie bearbeiten")</h3></div>
+        <form asp-antiforgery="true" class="card-body" method="post" action="/admin/categories/save">
+            <input type="hidden" name="id" value="@(edit?.Id ?? 0)" />
+            <div class="field"><label for="cName">Name</label><input id="cName" name="name" value="@edit?.Name" required maxlength="80" /></div>
+            <div class="field"><label for="cDesc">Beschreibung</label><textarea id="cDesc" name="description" rows="3">@edit?.Description</textarea></div>
+            <label class="switch"><input type="checkbox" name="status" value="true" checked="@(edit?.Status ?? true)" /><input type="hidden" name="status" value="false" /> Aktiv</label>
+            <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button>
+                @if (edit != null) { <a class="btn btn-ghost" href="/admin/categories">Abbrechen</a> }</div>
+        </form>
+    </div>
+</div>

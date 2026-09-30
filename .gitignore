@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# NegaCMS: SQLite temp files and visitor uploads (the database file itself IS committed)
+Nega.com/App_Data/*.db-wal
+Nega.com/App_Data/*.db-shm
+Nega.com/App_Data/*.db-journal
+Nega.com/wwwroot/uploads/content/

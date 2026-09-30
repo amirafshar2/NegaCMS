@@ -1,36 +1,27 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace BE
 {
-    public class User :IdentityUser<int>
+    public class User : IdentityUser<int>
     {
-        
         public string Name { get; set; }
         public string Family { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
         public string Picture { get; set; }
-        public string IdNumber { get; set; }
-        public string PhoneNumber { get; set; }
-        public string? Address { get; set; }
-        public DateTime ReqesterDate{ get; set; }
-        public bool Status { get; set; }
-        public bool DelateStatus { get; set; }
-        public string? StatusİnCompany { get; set; }
-        public string? About { get; set; }
-        public string Facebook { get; set; }
-        public string İnstagram { get; set; }
+        public string JobTitle { get; set; }
+        public string About { get; set; }
+        public string Address { get; set; }
+        public DateTime RegisterDate { get; set; } = DateTime.Now;
+        public bool Status { get; set; } = true;
+        /// <summary>Protected demo account: cannot be deleted or deactivated.</summary>
+        public bool IsDemo { get; set; }
+        public string Instagram { get; set; }
         public string Telegram { get; set; }
-        public List<Blog> Blogs { get; set; }
-        public int ContorimCod { get; set; }
-        public bool Personeldurumu {  get; set; }
-        public List<Comment> Comments { get; set; }
-        public List<Reply> replies { get; set; }
+        public string LinkedIn { get; set; }
 
+        public string FullName => $"{Name} {Family}".Trim();
+
+        public List<Blog> Blogs { get; set; } = new();
+        public List<Comment> Comments { get; set; } = new();
+        public List<Reply> Replies { get; set; } = new();
     }
 }

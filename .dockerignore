@@ -1,0 +1,8 @@
+**/bin
+**/obj
+**/.vs
+**/*.user
+**/App_Data/*.db-wal
+**/App_Data/*.db-shm
+Nega.com/wwwroot/uploads/content
+.git
