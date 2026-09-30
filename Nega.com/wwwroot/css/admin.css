@@ -176,7 +176,7 @@ table.table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 .cell-main { display: flex; gap: 12px; align-items: center; min-width: 220px; }
 .cell-main b { display: block; line-height: 1.35; }
 .cell-main small { color: var(--muted); }
-.clip { max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.clip { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 tr.unread td { background: rgba(229, 20, 10, .04); }
 tr.unread b { color: #fff; }
 
@@ -320,4 +320,8 @@ tr.unread b { color: #fff; }
   .table td:last-child { width: 100%; justify-content: flex-end; padding-top: 10px; }
   .table .cell-main { min-width: 0; }
   .table .clip { max-width: 60vw; }
+  .table td.stack { display: block; text-align: start; }
+  .table td.stack::before { display: block; margin-bottom: 4px; }
+  .table td.stack .clip { max-width: 100%; }
+  .table td.icon-cell { display: none; }
 }

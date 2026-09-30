@@ -15,9 +15,9 @@
                 @foreach (var c in Model)
                 {
                     <tr class="@(c.IsRead ? null : "unread")">
-                        <td style="width:40px"><i class="far @(c.IsRead ? "fa-envelope-open muted" : "fa-envelope")" style="color:@(c.IsRead ? "" : "#ff5a36")"></i></td>
-                        <td><b>@c.UserName</b><br /><small class="muted">@c.Mail</small></td>
-                        <td><a href="/admin/contacts/detail/@c.Id"><b>@c.Subject</b></a><div class="clip muted small">@c.Message</div></td>
+                        <td class="icon-cell" style="width:40px"><i class="far @(c.IsRead ? "fa-envelope-open muted" : "fa-envelope")" style="color:@(c.IsRead ? "" : "#ff5a36")"></i></td>
+                        <td class="stack"><b>@c.UserName</b><br /><small class="muted">@c.Mail</small></td>
+                        <td class="stack"><a href="/admin/contacts/detail/@c.Id"><b>@c.Subject</b></a><div class="clip muted small">@c.Message</div></td>
                         <td class="muted" style="white-space:nowrap">@Fmt.Ago(c.Date)</td>
                         <td><div class="actions"><a class="btn btn-ghost btn-sm" href="/admin/contacts/detail/@c.Id">Öffnen</a>
                             @await Html.PartialAsync("_Delete", ($"/admin/contacts/delete/{c.Id}", "Nachricht löschen?"))</div></td>
