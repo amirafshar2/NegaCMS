@@ -1,0 +1,24 @@
+@model List<Package>
+@{ ViewData["Title"] = "Preispakete"; }
+<div class="page-title"><div><h1>Preispakete</h1><p>Pakete für den Bereich „Preise“ und die Paket-Detailseiten.</p></div>
+    <a class="btn btn-primary" href="/admin/packages/create"><i class="fas fa-plus"></i> Neues Paket</a></div>
+<div class="cards-grid">
+    @foreach (var p in Model)
+    {
+        <div class="card item-card">
+            <img class="cover" src="@p.Picture" alt="" />
+            <div class="body">
+                <b>@p.Name @if (p.IsPopular) { <span class="badge b-red">Beliebt</span> }</b>
+                <span class="muted small">@p.Title</span>
+                <div style="font-size:1.6rem;font-weight:900;margin:8px 0">@Fmt.Price(p.Price, p.PriceUnit)</div>
+                <span class="muted small">@p.FeatureList.Count() Leistungen · ca. @p.DeliveryDays Tage · Position @p.Order</span>
+            </div>
+            <div class="foot">
+                @await Html.PartialAsync("_Status", (p.Status, $"/admin/packages/toggle/{p.Id}", "Sichtbar", "Ausgeblendet"))
+                <div class="actions"><a class="btn btn-ghost btn-icon" href="/package/detail/@p.Id" target="_blank"><i class="far fa-eye"></i></a>
+                    <a class="btn btn-ghost btn-icon" href="/admin/packages/edit/@p.Id"><i class="far fa-edit"></i></a>
+                    @await Html.PartialAsync("_Delete", ($"/admin/packages/delete/{p.Id}", $"Paket „{p.Name}“ löschen?"))</div>
+            </div>
+        </div>
+    }
+</div>

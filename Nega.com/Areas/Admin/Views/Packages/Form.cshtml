@@ -1,0 +1,33 @@
+@model Package
+@{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neues Paket" : "Paket bearbeiten"; if (isNew && string.IsNullOrEmpty(Model.PriceUnit)) { Model.PriceUnit = "€"; } }
+<div class="page-title"><div><div class="crumbs"><a href="/admin/packages">Preispakete</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<partial name="_Errors" />
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/packages/create" : $"/admin/packages/edit/{Model.Id}")">
+    <div class="form-grid">
+        <div class="card"><div class="card-body">
+            <div class="field-row">
+                <div class="field"><label asp-for="Name">Name</label><input asp-for="Name" required /></div>
+                <div class="field"><label asp-for="Title">Untertitel</label><input asp-for="Title" required /></div>
+            </div>
+            <div class="field"><label asp-for="Content">Beschreibung</label><textarea asp-for="Content" rows="4" required></textarea></div>
+            <div class="field"><label asp-for="Features">Leistungen (eine pro Zeile)</label><textarea asp-for="Features" rows="7"></textarea></div>
+            <input type="hidden" asp-for="Date" />
+        </div></div>
+        <div class="sticky-side">
+            <div class="card"><div class="card-body">
+                <div class="field-row">
+                    <div class="field"><label asp-for="Price">Preis</label><input asp-for="Price" type="number" min="0" step="1" /></div>
+                    <div class="field"><label asp-for="PriceUnit">Währung</label><input asp-for="PriceUnit" maxlength="5" /></div>
+                </div>
+                <div class="field-row">
+                    <div class="field"><label asp-for="DeliveryDays">Tage</label><input asp-for="DeliveryDays" type="number" min="0" /></div>
+                    <div class="field"><label asp-for="Order">Position</label><input asp-for="Order" type="number" min="0" /></div>
+                </div>
+                <label class="switch"><input type="checkbox" asp-for="IsPopular" /> Als „Beliebt“ hervorheben</label>
+                <label class="switch"><input type="checkbox" asp-for="Status" /> Auf der Website anzeigen</label>
+                <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/packages">Abbrechen</a></div>
+            </div></div>
+            <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Picture, "Bild", false))</div></div>
+        </div>
+    </div>
+</form>

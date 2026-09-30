@@ -366,3 +366,9 @@ Nega.com/App_Data/*.db-wal
 Nega.com/App_Data/*.db-shm
 Nega.com/App_Data/*.db-journal
 Nega.com/wwwroot/uploads/content/
+
+# The NuGet rule "**/[Pp]ackages/*" above must not hide the MVC views for price packages
+!Nega.com/Areas/Admin/Views/Packages/
+!Nega.com/Areas/Admin/Views/Packages/**
+!Nega.com/Views/Package/
+!Nega.com/Views/Package/**
