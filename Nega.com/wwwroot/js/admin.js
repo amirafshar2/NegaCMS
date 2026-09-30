@@ -34,6 +34,12 @@
     el.addEventListener("input", upd); upd();
   });
 
+  // Label every table cell with its column header (used by the mobile card layout)
+  document.querySelectorAll("table.table").forEach(t => {
+    const heads = [...t.querySelectorAll("thead th")].map(th => th.textContent.trim());
+    t.querySelectorAll("tbody tr").forEach(tr => [...tr.children].forEach((td, i) => td.setAttribute("data-label", heads[i] || "")));
+  });
+
   // Auto-hide success alerts
   setTimeout(() => document.querySelectorAll(".content > .alert-ok").forEach(a => { a.style.transition = "opacity .5s"; a.style.opacity = "0"; setTimeout(() => a.remove(), 500); }), 4500);
 })();

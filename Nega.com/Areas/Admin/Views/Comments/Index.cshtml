@@ -16,19 +16,18 @@
     else
     {
         <div class="table-wrap"><table class="table">
-            <thead><tr><th>Autor</th><th>Kommentar</th><th>Artikel</th><th>Antworten</th><th>Datum</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Autor</th><th>Kommentar</th><th>Datum</th><th>Status</th><th></th></tr></thead>
             <tbody>
                 @foreach (var c in Model)
                 {
                     <tr class="@(c.Status ? null : "unread")">
-                        <td><div class="cell-main" style="min-width:160px"><span class="avatar">@ContentHelper.Initials(c.AuthorName)</span><div><b>@c.AuthorName</b><small>@c.Email</small></div></div></td>
-                        <td><div class="clip" style="max-width:300px">@c.Content</div></td>
-                        <td><a class="clip" style="max-width:200px;display:block" href="/blog/@c.BlogId" target="_blank">@c.Blog?.Title</a></td>
-                        <td>@c.Replies.Count</td>
-                        <td class="muted">@Fmt.Ago(c.Date)</td>
+                        <td><div class="cell-main" style="min-width:170px"><span class="avatar">@ContentHelper.Initials(c.AuthorName)</span><div><b>@c.AuthorName</b><small>@c.Email</small></div></div></td>
+                        <td><div class="clip" style="max-width:320px">@c.Content</div>
+                            <small class="muted clip" style="max-width:320px;display:block"><i class="far fa-newspaper"></i> @c.Blog?.Title @if (c.Replies.Any()) { <span>· <i class="fas fa-reply"></i> @c.Replies.Count</span> }</small></td>
+                        <td class="muted nowrap">@Fmt.Ago(c.Date)</td>
                         <td>@await Html.PartialAsync("_Status", (c.Status, $"/admin/comments/toggle/{c.Id}?back={f}", "Freigegeben", "Wartet"))</td>
                         <td><div class="actions">
-                            <a class="btn btn-ghost btn-sm" href="/admin/comments/detail/@c.Id"><i class="fas fa-reply"></i> Antworten</a>
+                            <a class="btn btn-ghost btn-icon" href="/admin/comments/detail/@c.Id" title="Öffnen und antworten" aria-label="Öffnen und antworten"><i class="fas fa-reply"></i></a>
                             @await Html.PartialAsync("_Delete", ($"/admin/comments/delete/{c.Id}", "Kommentar inkl. Antworten löschen?"))
                         </div></td>
                     </tr>

@@ -38,7 +38,7 @@
                 <span class="label">Rollen</span>
                 @foreach (var r in roles)
                 {
-                    <label class="switch" style="font-weight:600"><input type="checkbox" name="Roles" value="@r.Name" checked="@Model.Roles.Contains(r.Name)" disabled="@Model.IsDemo" /> @r.Name <small class="muted">@r.Description</small></label>
+                    <label class="role-option"><input type="checkbox" name="Roles" value="@r.Name" checked="@Model.Roles.Contains(r.Name)" disabled="@Model.IsDemo" /><span><b>@r.Name</b><small>@r.Description</small></span></label>
                 }
                 <hr style="border:0;border-top:1px solid var(--line);margin:14px 0" />
                 <label class="switch"><input type="checkbox" asp-for="Status" disabled="@Model.IsDemo" /> Konto aktiv</label>

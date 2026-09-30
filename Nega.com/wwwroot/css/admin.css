@@ -281,3 +281,43 @@ tr.unread b { color: #fff; }
 .demo-accounts { display: grid; gap: 8px; margin-top: 16px; }
 .demo-accounts button { text-align: start; width: 100%; justify-content: flex-start; }
 .form-grid > *, .row > * { min-width: 0; }
+
+/* ---------- Design fixes (review round 2) ---------- */
+.table td:last-child { width: 1%; white-space: nowrap; }
+.table .actions { flex-wrap: nowrap; }
+.table td.nowrap, .table .nowrap { white-space: nowrap; }
+.kv dd { overflow-wrap: anywhere; }
+.empty h2 { color: var(--text); }
+.row > .card { display: flex; flex-direction: column; }
+.row > .card > .toolbar:last-child { margin-top: auto; }
+.role-option { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin-bottom: 12px; }
+.role-option input { margin-top: 2px; }
+.role-option b { display: block; font-size: .9rem; }
+.role-option small { display: block; color: var(--muted); font-size: .78rem; line-height: 1.4; }
+.role-option input { appearance: none; -webkit-appearance: none; width: 42px; height: 24px; border-radius: 99px; background: #2a2e38; position: relative; cursor: pointer; transition: .2s; flex: none; }
+.role-option input::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: .2s; }
+.role-option input:checked { background: var(--ok); }
+.role-option input:checked::after { inset-inline-start: 21px; }
+.role-option input:disabled { opacity: .5; cursor: not-allowed; }
+.demo-strip .long { display: inline; }
+
+@media (max-width: 720px) {
+  .topbar .title { display: none; }
+  .demo-strip { font-size: .8rem; padding-block: 8px; }
+  .demo-strip .long { display: none; }
+  .page-title h1 { font-size: 1.35rem; }
+
+  /* Tables become stacked cards on small screens (labels are added by admin.js) */
+  .table-wrap { overflow: visible; }
+  table.table, .table tbody, .table tr, .table td { display: block; width: 100%; }
+  .table thead { display: none; }
+  .table tr { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .table tr:last-child { border-bottom: 0; }
+  .table td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; border: 0; text-align: end; }
+  .table td::before { content: attr(data-label); color: var(--muted); font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; text-align: start; flex: none; }
+  .table td[data-label=""]::before, .table td:first-child::before { display: none; }
+  .table td:first-child { text-align: start; }
+  .table td:last-child { width: 100%; justify-content: flex-end; padding-top: 10px; }
+  .table .cell-main { min-width: 0; }
+  .table .clip { max-width: 60vw; }
+}

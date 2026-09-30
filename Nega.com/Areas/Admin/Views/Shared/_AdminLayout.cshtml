@@ -81,7 +81,7 @@
         @if (Demo.Value.Enabled)
         {
             <div class="demo-strip">
-                <span><i class="fas fa-flask"></i> <b>Demo-Modus</b> – alles ausprobieren erlaubt. Die Daten werden in ca. <b>@minutesLeft Min.</b> automatisch zurückgesetzt.</span>
+                <span><i class="fas fa-flask"></i> <b>Demo-Modus</b><span class="long"> – alles ausprobieren erlaubt. Die Daten werden in ca. <b>@minutesLeft Min.</b> automatisch zurückgesetzt.</span></span>
                 <form asp-antiforgery="true" method="post" action="/admin/account/switchrole">
                     
                     <input type="hidden" name="returnUrl" value="@Context.Request.Path" />

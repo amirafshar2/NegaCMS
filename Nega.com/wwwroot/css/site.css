@@ -399,3 +399,15 @@ details.reply-form form { margin-top: 12px; }
 .error-page { text-align: center; padding-block: 120px; }
 .error-page .code { font-size: clamp(5rem, 16vw, 9rem); font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+
+/* ---------- Design fixes (review round 2) ---------- */
+h1, h2, h3 { overflow-wrap: break-word; hyphens: auto; }
+.alert-info { background: rgba(59, 130, 246, .12); border: 1px solid rgba(59, 130, 246, .35); color: #cfe0ff; }
+.pkg-box .team-badge { align-self: flex-start; }
+.demo-bar .long { display: inline; }
+@media (max-width: 640px) {
+  .demo-bar { font-size: .78rem; }
+  .demo-bar .long { display: none; }
+  .page-head { padding-block: 48px 40px; }
+  .page-head h1 { font-size: 1.8rem; }
+}

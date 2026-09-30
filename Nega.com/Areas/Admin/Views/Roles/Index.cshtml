@@ -8,7 +8,7 @@
             <tbody>
                 @foreach (var r in Model)
                 {
-                    <tr><td><b>@r.Role.Name</b> @if (RoleNames.All.Contains(r.Role.Name)) { <span class="badge b-gray">System</span> }</td>
+                    <tr><td class="nowrap"><b>@r.Role.Name</b> @if (RoleNames.All.Contains(r.Role.Name)) { <span class="badge b-gray">System</span> }</td>
                         <td class="muted">@r.Role.Description</td>
                         <td><a href="/admin/users?role=@r.Role.Name">@r.Users</a></td>
                         <td><div class="actions"><a class="btn btn-ghost btn-icon" href="/admin/roles?edit=@r.Role.Id"><i class="far fa-edit"></i></a>

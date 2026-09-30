@@ -23,7 +23,7 @@
         </div>
     </div>
     <aside class="card pkg-box @(Model.IsPopular ? "price popular" : null)">
-        @if (Model.IsPopular) { <span class="team-badge" style="margin:0 0 10px;display:inline-block">Beliebtestes Paket</span> }
+        @if (Model.IsPopular) { <span class="team-badge" style="margin:0 0 10px">Beliebtestes Paket</span> }
         <h3 style="font-size:1.4rem">@Model.Name</h3>
         <div class="amount" style="font-size:2.4rem;font-weight:900">@Fmt.Price(Model.Price, Model.PriceUnit)</div>
         <p class="muted">einmalig, zzgl. MwSt.</p>
