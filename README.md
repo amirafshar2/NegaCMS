@@ -1,14 +1,68 @@
-# NEGA CMS – Agentur-Website mit Admin-Panel
+<div align="center">
 
-Ein vollständiges Content-Management-System für eine (fiktive) Digitalagentur, entwickelt mit **ASP.NET Core 8 MVC** in einer sauberen **3-Schichten-Architektur**.
-Die öffentliche Website und das komplette Admin-Panel sind auf Deutsch. Die Datenbank ist eine **SQLite-Datei direkt im Projekt** – es wird kein Datenbankserver benötigt.
+<img src="Nega.com/wwwroot/img/brand/icon-256.png" alt="NEGA Logo" width="88" />
 
-> **Live-Demo:** Der Admin-Bereich unter `/admin` öffnet sich im Demo-Modus **ohne Registrierung und ohne Anmeldung**.
-> Alle Änderungen sind erlaubt und werden automatisch alle 60 Minuten zurückgesetzt.
+# NEGA CMS
 
-![Startseite](docs/screenshots/01-startseite.png)
+**Agentur-Website mit vollständigem Admin-Panel – ASP.NET Core 8 · 3-Schichten-Architektur · SQLite**
 
----
+[![Live-Demo](https://img.shields.io/badge/Live--Demo-negacms.onrender.com-e5140a?style=for-the-badge&logo=render&logoColor=white)](https://negacms.onrender.com/)
+[![Admin-Demo](https://img.shields.io/badge/Admin--Panel-ohne%20Login%20testen-111111?style=for-the-badge)](https://negacms.onrender.com/admin)
+
+![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)
+![ASP.NET Core MVC](https://img.shields.io/badge/ASP.NET%20Core-MVC-512BD4?logo=dotnet&logoColor=white)
+![EF Core 8](https://img.shields.io/badge/EF%20Core-8.0-6DB33F)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Identity](https://img.shields.io/badge/ASP.NET%20Identity-Rollen%20%26%20Rechte-0A66C2)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+![DSGVO](https://img.shields.io/badge/DSGVO-ohne%20Tracking-2ea44f)
+
+</div>
+
+<p align="center">
+  <a href="https://negacms.onrender.com/"><img src="docs/screenshots/01-startseite.png" alt="NEGA CMS – Startseite" width="100%" /></a>
+</p>
+
+## Überblick
+
+**NEGA CMS** ist ein vollständiges Content-Management-System für eine (fiktive) Digitalagentur.
+Die öffentliche Website – Leistungen, Referenzen, Preise, Blog, Kontakt – wird komplett über ein eigenes
+Admin-Panel gepflegt. Das Projekt zeigt eine saubere **3-Schichten-Architektur** (BE · DAL · BLL · UI),
+rollenbasierte Rechte mit **ASP.NET Core Identity**, Validierung mit **FluentValidation** und ein
+selbst entwickeltes, responsives Design ohne CSS-Framework.
+
+| | |
+|---|---|
+| 🌐 **Website** | [negacms.onrender.com](https://negacms.onrender.com/) |
+| 🛠️ **Admin-Panel** | [negacms.onrender.com/admin](https://negacms.onrender.com/admin) – **ohne Registrierung und ohne Login** |
+| 🔄 **Demo-Reset** | Alle Änderungen sind erlaubt und werden automatisch alle 60 Minuten zurückgesetzt |
+| 🗄️ **Datenbank** | SQLite-Datei direkt im Projekt – kein Datenbankserver nötig |
+
+> [!NOTE]
+> Die Demo läuft auf dem kostenlosen Plan von Render. Nach längerer Inaktivität schläft der Dienst ein –
+> der **erste Aufruf kann daher bis zu einer Minute dauern**. Danach ist die Seite sofort schnell.
+
+## Inhalt
+
+- [Highlights](#highlights)
+- [Screenshots](#screenshots)
+- [Architektur](#architektur)
+- [Funktionen](#funktionen)
+- [Demo-Modus](#demo-modus)
+- [Lokal starten](#lokal-starten)
+- [Deployment](#deployment-docker--render)
+- [Qualitätssicherung](#qualitätssicherung)
+- [Technologien](#technologien)
+- [Projektstruktur](#projektstruktur)
+
+## Highlights
+
+- **Saubere Schichtentrennung** – Controller sprechen nur mit Service-Interfaces der BLL, nie direkt mit der Datenbank.
+- **19 Admin-Module** mit vollständigem CRUD, Bild-Upload, Sichtbarkeits-Schaltern und Bestätigungsdialogen.
+- **Rollen & Rechte** (Admin, Moderator, Writer) – in der Demo live umschaltbar über „Ansicht als“.
+- **Kommentar-Moderation**, Nachrichten-Posteingang, Newsletter mit CSV-Export und automatische Benachrichtigungen.
+- **Responsive** bis hinunter zum Smartphone – Admin-Tabellen werden mobil zu Karten.
+- **Datenschutzfreundlich** – keine Tracking-Cookies, keine CDNs, Schriften/Icons lokal, YouTube per 2-Klick-Lösung.
 
 ## Screenshots
 
@@ -105,7 +159,7 @@ flowchart TB
 | Nachrichten, Newsletter, Kundenstimmen | ✔ | ✔ | – |
 | Website-Inhalte, Benutzer, Rollen, Einstellungen | ✔ | – | – |
 
-Im Demo-Modus kann man oben im Admin-Panel über **„Ansicht als“** zwischen Admin, Moderator und Writer wechseln.
+Im Demo-Modus kann man oben im Admin-Panel über **„Ansicht als“** zwischen Admin, Moderator und Writer wechseln – [jetzt ausprobieren](https://negacms.onrender.com/admin).
 
 ## Demo-Modus
 
@@ -146,10 +200,27 @@ docker run -p 8080:8080 nega-cms
 ```
 
 Für [Render](https://render.com) liegt eine `render.yaml` bei (Free-Plan, Region Frankfurt, Health-Check `/health`).
+Die Live-Demo unter **[negacms.onrender.com](https://negacms.onrender.com/)** wird bei jedem Push auf `master` automatisch neu gebaut und veröffentlicht.
+
+## Qualitätssicherung
+
+Alle Seiten und CRUD-Abläufe wurden mit automatisierten **Playwright**-Tests im Browser geprüft:
+
+- **122 CRUD-Prüfungen** – Anlegen, Bearbeiten, Ausblenden und Löschen in jedem Admin-Modul, inklusive Kontrolle auf der öffentlichen Website
+- **Crawler über 110+ Seiten** – keine Fehlerseiten, keine fehlerhaften Links, keine JavaScript-Fehler in der Konsole
+- Prüfung der Rollenrechte, der Validierungsmeldungen und des Demo-Resets
 
 ## Technologien
 
-ASP.NET Core 8 MVC · Entity Framework Core 8 · SQLite · ASP.NET Core Identity · FluentValidation · Razor Views · HTML5/CSS3 (Custom Design, CSS-Grid, ohne Framework) · Vanilla JavaScript · Font Awesome (lokal) · Docker
+| Bereich | Technologien |
+|---|---|
+| **Backend** | ASP.NET Core 8 MVC · C# 12 · Dependency Injection · Background Services |
+| **Daten** | Entity Framework Core 8 · SQLite · Repository-Pattern · Seed-Daten |
+| **Sicherheit** | ASP.NET Core Identity · rollenbasierte Autorisierung · Antiforgery-Token · Upload-Prüfung |
+| **Validierung** | FluentValidation (deutsche Fehlermeldungen) |
+| **Frontend** | Razor Views · HTML5 · CSS3 (Custom Design, Grid/Flexbox, ohne Framework) · Vanilla JavaScript · Font Awesome (lokal) |
+| **Betrieb** | Docker · Render (Free-Plan, Frankfurt) · Health-Check |
+| **Tests** | Playwright (End-to-End, CRUD, Crawler) |
 
 ## Projektstruktur
 
@@ -177,7 +248,14 @@ NegaCMS/
 
 ---
 
-**Entwickler:** Amir Reza Afshar – Umschulung Fachinformatiker für Anwendungsentwicklung
-GitHub: [github.com/amirafshar2](https://github.com/amirafshar2)
+<div align="center">
 
-*Alle Firmen, Personen, Referenzen und Kundenstimmen in den Demo-Daten sind frei erfunden.*
+**Entwickelt von Amir Reza Afshar**
+Umschulung Fachinformatiker für Anwendungsentwicklung
+
+[🌐 amirrezaafshar.de](https://amirrezaafshar.de) · [GitHub](https://github.com/amirafshar2) · [Live-Demo](https://negacms.onrender.com/)
+
+<sub>Alle Firmen, Personen, Referenzen und Kundenstimmen in den Demo-Daten sind frei erfunden.<br/>
+Impressum und Datenschutz: <a href="https://amirrezaafshar.de/impressum">amirrezaafshar.de/impressum</a> · <a href="https://amirrezaafshar.de/datenschutz">amirrezaafshar.de/datenschutz</a></sub>
+
+</div>
