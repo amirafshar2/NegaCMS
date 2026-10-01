@@ -15,7 +15,7 @@
 
   // Reveal on scroll + counters
   const counters = el => {
-    el.querySelectorAll(".count").forEach(c => {
+    el.querySelectorAll(".counter-value").forEach(c => {
       const to = parseInt(c.dataset.to, 10) || 0, start = performance.now(), dur = 1400;
       const fmt = n => n.toLocaleString("de-DE");
       const step = t => {

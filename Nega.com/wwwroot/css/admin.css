@@ -288,7 +288,7 @@ tr.unread b { color: #fff; }
 .table td.nowrap, .table .nowrap { white-space: nowrap; }
 .kv dd { overflow-wrap: anywhere; }
 .empty h2 { color: var(--text); }
-.row > .card { display: flex; flex-direction: column; }
+.row > .card:not(.stat) { display: flex; flex-direction: column; }
 .row > .card > .toolbar:last-child { margin-top: auto; }
 .role-option { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; margin-bottom: 12px; }
 .role-option input { margin-top: 2px; }
