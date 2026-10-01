@@ -1,6 +1,7 @@
 using BE;
 using BLL.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Negacom.Models;
 
 namespace Negacom.Controllers
@@ -66,8 +67,12 @@ namespace Negacom.Controllers
             return Redirect("/#newsletter");
         }
 
-        public IActionResult Privacy() => View(_settings.Get());
-        public IActionResult Imprint() => View(_settings.Get());
+        // If the demo is part of a personal website, the legal pages of that website apply (appsettings "Legal").
+        public IActionResult Privacy([FromServices] IConfiguration config) =>
+            config["Legal:PrivacyUrl"] is { Length: > 0 } url ? Redirect(url) : View(_settings.Get());
+
+        public IActionResult Imprint([FromServices] IConfiguration config) =>
+            config["Legal:ImprintUrl"] is { Length: > 0 } url ? Redirect(url) : View(_settings.Get());
 
         public new IActionResult NotFound() => Status(404);
 

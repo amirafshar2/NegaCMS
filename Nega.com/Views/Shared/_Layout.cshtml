@@ -1,6 +1,9 @@
 @inject BLL.Abstract.IOurContactService SettingsService
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
 @{
     var s = SettingsService.Get();
+    var privacyUrl = Config["Legal:PrivacyUrl"] is { Length: > 0 } pu ? pu : "/datenschutz";
+    var imprintUrl = Config["Legal:ImprintUrl"] is { Length: > 0 } iu ? iu : "/impressum";
     var path = Context.Request.Path.Value ?? "/";
     string Active(string p) => (p == "/" ? path == "/" : path.StartsWith(p)) ? "active" : null;
 }
@@ -86,8 +89,8 @@
                 <div>
                     <h4>Rechtliches</h4>
                     <ul>
-                        <li><a href="/impressum">Impressum</a></li>
-                        <li><a href="/datenschutz">Datenschutz</a></li>
+                        <li><a href="@imprintUrl">Impressum</a></li>
+                        <li><a href="@privacyUrl">Datenschutz</a></li>
                         <li><a href="/admin">Admin-Demo</a></li>
                     </ul>
                 </div>
