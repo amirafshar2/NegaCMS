@@ -6,6 +6,48 @@ Die öffentliche Website und das komplette Admin-Panel sind auf Deutsch. Die Dat
 > **Live-Demo:** Der Admin-Bereich unter `/admin` öffnet sich im Demo-Modus **ohne Registrierung und ohne Anmeldung**.
 > Alle Änderungen sind erlaubt und werden automatisch alle 60 Minuten zurückgesetzt.
 
+![Startseite](docs/screenshots/01-startseite.png)
+
+---
+
+## Screenshots
+
+### Öffentliche Website
+
+| Leistungen | Referenzen mit Filter |
+|---|---|
+| ![Leistungen](docs/screenshots/02-leistungen.png) | ![Referenzen](docs/screenshots/03-referenzen.png) |
+| **Preispakete** | **Kontaktformular** |
+| ![Preise](docs/screenshots/04-preise.png) | ![Kontakt](docs/screenshots/05-kontakt.png) |
+| **Blog mit Suche & Kategorien** | **Blogartikel mit Kommentaren** |
+| ![Blog](docs/screenshots/06-blog.png) | ![Blogartikel](docs/screenshots/07-blog-artikel.png) |
+| **Paket-Detailseite** | |
+| ![Paket](docs/screenshots/08-paket-detail.png) | |
+
+### Admin-Panel
+
+![Admin-Dashboard](docs/screenshots/10-admin-dashboard.png)
+
+| Blogartikel | Artikel bearbeiten |
+|---|---|
+| ![Artikel](docs/screenshots/11-admin-artikel.png) | ![Artikel bearbeiten](docs/screenshots/12-admin-artikel-bearbeiten.png) |
+| **Kommentar-Moderation** | **Referenzen** |
+| ![Kommentar](docs/screenshots/13-admin-kommentar.png) | ![Referenzen](docs/screenshots/14-admin-referenzen.png) |
+| **Preispakete** | **Benutzer** |
+| ![Preispakete](docs/screenshots/15-admin-preispakete.png) | ![Benutzer](docs/screenshots/16-admin-benutzer.png) |
+| **Rollen & Rechte** | **Nachrichten** |
+| ![Rollen](docs/screenshots/17-admin-rollen.png) | ![Nachrichten](docs/screenshots/18-admin-nachrichten.png) |
+| **Einstellungen** | |
+| ![Einstellungen](docs/screenshots/19-admin-einstellungen.png) | |
+
+### Mobil (responsive)
+
+| Startseite | Blogartikel | Admin-Dashboard | Admin-Artikelliste |
+|---|---|---|---|
+| ![Mobil Startseite](docs/screenshots/20-mobil-startseite.png) | ![Mobil Blog](docs/screenshots/21-mobil-blog.png) | ![Mobil Dashboard](docs/screenshots/22-mobil-admin-dashboard.png) | ![Mobil Artikel](docs/screenshots/23-mobil-admin-artikel.png) |
+
+Auf kleinen Bildschirmen werden die Admin-Tabellen automatisch als Karten dargestellt.
+
 ---
 
 ## Architektur
