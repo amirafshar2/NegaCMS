@@ -1,8 +1,8 @@
 @model Package
 @{ var isNew = Model.Id == 0; ViewData["Title"] = isNew ? "Neues Paket" : "Paket bearbeiten"; if (isNew && string.IsNullOrEmpty(Model.PriceUnit)) { Model.PriceUnit = "€"; } }
-<div class="page-title"><div><div class="crumbs"><a href="/admin/packages">Preispakete</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
+<div class="page-title"><div><div class="crumbs"><a href="/admin/pricing">Preispakete</a> / @(isNew ? "Neu" : "Bearbeiten")</div><h1>@ViewData["Title"]</h1></div></div>
 <partial name="_Errors" />
-<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/packages/create" : $"/admin/packages/edit/{Model.Id}")">
+<form asp-antiforgery="true" method="post" enctype="multipart/form-data" action="@(isNew ? "/admin/pricing/create" : $"/admin/pricing/edit/{Model.Id}")">
     <div class="form-grid">
         <div class="card"><div class="card-body">
             <div class="field-row">
@@ -25,7 +25,7 @@
                 </div>
                 <label class="switch"><input type="checkbox" asp-for="IsPopular" /> Als „Beliebt“ hervorheben</label>
                 <label class="switch"><input type="checkbox" asp-for="Status" /> Auf der Website anzeigen</label>
-                <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/packages">Abbrechen</a></div>
+                <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="far fa-save"></i> Speichern</button><a class="btn btn-ghost" href="/admin/pricing">Abbrechen</a></div>
             </div></div>
             <div class="card"><div class="card-body">@await Html.PartialAsync("_ImageField", (Model.Picture, "Bild", false))</div></div>
         </div>

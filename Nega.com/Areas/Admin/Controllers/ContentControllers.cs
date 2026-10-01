@@ -37,9 +37,9 @@ namespace Negacom.Areas.Admin.Controllers
     }
 
     [Authorize(Roles = RoleNames.Admin)]
-    public class PackagesController : CrudControllerBase<Package>
+    public class PricingController : CrudControllerBase<Package>
     {
-        public PackagesController(IPackageService s) : base(s) { }
+        public PricingController(IPackageService s) : base(s) { }
         protected override string ItemName => "Das Paket";
         protected override Action<Package, string> SetImage => (p, url) => p.Picture = url;
     }
